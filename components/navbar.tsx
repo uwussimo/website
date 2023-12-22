@@ -10,7 +10,7 @@ const links = [
 
 const Navbar = () => {
   return (
-    <div className="flex items-center justify-between p-5 md:px-12 m-5 rounded-full sticky bg-primary/10 filter backdrop-blur-2xl">
+    <div className="flex items-center justify-between py-4 my-5">
       <Link href={"/"} className="text-xl font-bold">
         usufdev.com
       </Link>
