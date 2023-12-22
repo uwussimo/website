@@ -1,6 +1,10 @@
+import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "@/styles/globals.css";
+import { Container } from "@/components/container";
+import { Navbar } from "@/components/navbar";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { TailwindIndicator } from "@/components/tw-indicator";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +20,20 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <Container>
+            <Navbar />
+            {children}
+          </Container>
+          <TailwindIndicator />
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
