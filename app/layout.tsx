@@ -5,6 +5,7 @@ import { Container } from "@/components/container";
 import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { TailwindIndicator } from "@/components/tw-indicator";
+import Footer from "@/components/footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
             <Navbar />
             {children}
           </Container>
+          <Footer />
           <TailwindIndicator />
         </ThemeProvider>
       </body>
