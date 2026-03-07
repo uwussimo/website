@@ -22,7 +22,10 @@ function getSlugFromFilename(filename: string): string {
 
 export function getAllSlugs(): string[] {
   if (!fs.existsSync(POSTS_DIR)) return [];
-  return fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith(".md")).map(getSlugFromFilename);
+  return fs
+    .readdirSync(POSTS_DIR)
+    .filter((f) => f.endsWith(".md"))
+    .map(getSlugFromFilename);
 }
 
 export function getPostBySlug(slug: string): Post | null {
@@ -46,7 +49,7 @@ export function getAllPosts(): PostMeta[] {
     .map((slug) => {
       const post = getPostBySlug(slug);
       if (!post) return null;
-      const { content: _, ...meta } = post;
+      const { ...meta } = post;
       return meta;
     })
     .filter(Boolean) as PostMeta[];
