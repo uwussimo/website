@@ -10,9 +10,9 @@ const TopLoader = () => {
       height={3}
       crawl={true}
       showSpinner={false}
-      easing="ease-in-out"
+      easing="ease"
       speed={100}
-      shadow="0 0 10px #000000,0 0 5px #000000"
+      shadow="0 0 0 #ffffff,0 0 0 #ffffff"
     />
   );
 };

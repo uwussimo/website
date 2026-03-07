@@ -1,11 +1,13 @@
 import { getAllPosts } from "@/lib/blog";
 import { PostCard } from "./_components/post-card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function Home() {
   const posts = getAllPosts().slice(0, 3);
   return (
     <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[680px] px-6 pb-24 pt-20 sm:px-8">
-      <section className="mb-20">
+      <section className="mb-20 flex flex-col gap-4">
         <h1 className="mb-4 font-mono text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
           building products
           <br />
@@ -16,6 +18,18 @@ export default function Home() {
           have founded & built, so you don&apos;t have to make the same
           mistakes.
         </p>
+        <div className="flex gap-2">
+          <Button asChild>
+            <Link href="/essays" className="w-fit">
+              Read Essays
+            </Link>
+          </Button>
+          <Button variant={"outline"} asChild>
+            <Link href="/projects" className="w-fit">
+              View Projects
+            </Link>
+          </Button>
+        </div>
       </section>
 
       <section>

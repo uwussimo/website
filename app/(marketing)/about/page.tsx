@@ -15,8 +15,7 @@ export default function About() {
           about me
         </h1>
         <p className="mb-8 text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
-          i write about product development & startups. i am an engineer,
-          designer, and entrepreneur.
+          i write about product development & startups.
         </p>
         <div className="flex flex-wrap gap-4">
           <Link

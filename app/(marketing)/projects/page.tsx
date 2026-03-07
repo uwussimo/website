@@ -11,7 +11,6 @@ const STATUS_FILTERS = [
   { value: "active", label: "Live" },
   { value: "stealth", label: "Stealth" },
   { value: "discontinued", label: "Ended" },
-  { value: "coming soon", label: "Coming soon" },
   { value: "acquired", label: "Acquired" },
 ] as const;
 
@@ -27,17 +26,7 @@ const projects: {
   logo?: string | null;
 }[] = [
   {
-    name: "dorim.com",
-    role: "Software Engineer",
-    desc: "central pharmaceutical ecosystem",
-    users: "N/A",
-    mrr: "N/A",
-    founded: "2022",
-    status: "active",
-    link: "https://dorim.com",
-  },
-  {
-    name: "ResetDay",
+    name: "mobile app",
     role: "builder",
     desc: "ai powered gamified application to reclaim attention, time and focus. currently in development phase.",
     users: "N/A",
@@ -87,16 +76,6 @@ const projects: {
     link: null,
   },
   {
-    name: "chatflow",
-    role: "Consultant",
-    desc: "B2B SaaS, helping my younger brother to build instagram and telegram automation platform",
-    users: "N/A",
-    mrr: "N/A",
-    founded: "2025",
-    status: "coming soon",
-    link: null,
-  },
-  {
     name: "Codeflow",
     role: "Founder",
     desc: "acquired by 42.uz, coding bootcamp for fast tracked frontend development.",
@@ -105,16 +84,6 @@ const projects: {
     founded: "2020",
     status: "acquired",
     link: null,
-  },
-  {
-    name: "GitHub Repository Explorer",
-    role: "builder",
-    desc: "access past github repos fast. built it to test producthunt launches.",
-    users: "470+",
-    mrr: "$0",
-    founded: "2022",
-    status: "active",
-    link: "https://chromewebstore.google.com",
   },
   {
     name: "JustOrder",
@@ -130,7 +99,10 @@ const projects: {
 
 const statusConfig: Record<
   string,
-  { variant: "default" | "secondary" | "outline" | "destructive"; label: string }
+  {
+    variant: "default" | "secondary" | "outline" | "destructive";
+    label: string;
+  }
 > = {
   active: { variant: "default", label: "Live" },
   stealth: { variant: "secondary", label: "Stealth" },
@@ -144,7 +116,13 @@ function ProjectLogo({ name, logo }: { name: string; logo?: string | null }) {
   return (
     <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary shadow-sm sm:size-16">
       {logo ? (
-        <Image src={logo} alt={name} width={64} height={64} className="size-full object-cover" />
+        <Image
+          src={logo}
+          alt={name}
+          width={64}
+          height={64}
+          className="size-full object-cover"
+        />
       ) : (
         <span className="text-xl font-semibold text-foreground">{initial}</span>
       )}
@@ -178,7 +156,7 @@ export default function Projects() {
                 "rounded-full px-3 py-1.5 font-mono text-[12px] transition-colors",
                 statusFilter === value
                   ? "border border-border bg-secondary text-foreground"
-                  : "border border-transparent bg-secondary/50 text-foreground/70 hover:bg-secondary hover:text-foreground"
+                  : "border border-transparent bg-secondary/50 text-foreground/70 hover:bg-secondary hover:text-foreground",
               )}
             >
               {label}

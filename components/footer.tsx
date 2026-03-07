@@ -2,54 +2,55 @@ import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   NewTwitterIcon,
-  InstagramIcon,
   GithubIcon,
-  YoutubeIcon,
   TelegramIcon,
 } from "@hugeicons/core-free-icons";
 
 const socialLinks = [
-  { href: "https://github.com/usufdev", icon: GithubIcon, label: "GitHub" },
-  { href: "https://t.me/usufdev", icon: TelegramIcon, label: "Telegram" },
   {
-    href: "https://twitter.com/usufdev",
+    href: "https://github.com/uwussimo",
+    icon: GithubIcon,
+    label: "Yusuf Abdurakhimov Github Profile",
+  },
+
+  {
+    href: "https://twitter.com/uwussimo",
     icon: NewTwitterIcon,
-    label: "Twitter",
+    label: "Yusuf Abdurakhimov's Twitter page",
   },
   {
-    href: "https://instagram.com/usufdev",
-    icon: InstagramIcon,
-    label: "Instagram",
+    href: "https://t.me/TenxStartuper",
+    icon: TelegramIcon,
+    label: "Yusuf Abdurakhimov's telegram page",
   },
-  { href: "https://youtube.com/@usufdev", icon: YoutubeIcon, label: "YouTube" },
 ];
 
 const Footer = () => (
-  <footer className="border-t border-border py-12">
+  <footer className="bg-background border-t border-border py-12">
     <div className="mx-auto max-w-[680px] px-6 sm:px-8">
       <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
         <div className="flex flex-wrap gap-6">
           <Link
             href="/about"
-            className="font-mono text-[13px] text-foreground/70 hover:text-foreground"
+            className="text-foreground font-mono text-sm hover:text-foreground/80"
           >
             about
           </Link>
           <Link
             href="/essays"
-            className="font-mono text-[13px] text-foreground/70 hover:text-foreground"
+            className="text-foreground font-mono text-sm hover:text-foreground/80"
           >
             essays
           </Link>
           <Link
             href="/talks"
-            className="font-mono text-[13px] text-foreground/70 hover:text-foreground"
+            className="text-foreground font-mono text-sm hover:text-foreground/80"
           >
             talks
           </Link>
           <Link
             href="/projects"
-            className="font-mono text-[13px] text-foreground/70 hover:text-foreground"
+            className="text-foreground font-mono text-sm hover:text-foreground/80"
           >
             building
           </Link>
@@ -61,7 +62,7 @@ const Footer = () => (
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-foreground/70 transition-colors duration-200 hover:text-foreground"
+              className="text-foreground transition-colors duration-200 hover:text-foreground/80"
               aria-label={label}
             >
               <HugeiconsIcon icon={icon} className="size-4" strokeWidth={1.5} />

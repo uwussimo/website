@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Figtree } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TopLoader } from "@/components/providers/top-loader";
+import { ThemeProvider } from "@/components/providers/theme";
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -20,6 +21,13 @@ export const metadata: Metadata = {
   title: "usuf.dev   building products that people love",
   description:
     "Builder & engineer sharing lessons from startups I've founded & built. From Uzbekistan to United States.",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: "contain",
+  },
 };
 
 export default function RootLayout({
@@ -28,11 +36,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", figtree.variable)}>
+    <html
+      lang="en"
+      className={cn("font-sans", figtree.variable)}
+      suppressHydrationWarning
+    >
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
+          {children}
+        </ThemeProvider>
         <TopLoader />
       </body>
     </html>
