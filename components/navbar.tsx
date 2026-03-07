@@ -1,26 +1,27 @@
 import Link from "next/link";
-import { buttonVariants } from "./ui/button";
 
-const Navbar = () => {
-  return (
-    <div className="fixed top-0 left-0 right-0 bg-background p-5 flex justify-center items-center border-b ">
-      <Link href={"/"} className={buttonVariants({ variant: "ghost" })}>
-        Home
+const navLinks = [
+  { href: "/", label: "Yusuf Abdurakhimov", isLogo: true },
+  { href: "/about", label: "about" },
+  { href: "/essays", label: "essays" },
+  { href: "/projects", label: "building" },
+] as const;
+
+const Navbar = () => (
+  <nav
+    className="fixed top-0 left-0 right-0 z-50 flex items-center justify-center gap-8 border-b border-border bg-secondary/95 backdrop-blur-sm py-4"
+    aria-label="Main"
+  >
+    {navLinks.map(({ href, label }) => (
+      <Link
+        key={label}
+        href={href}
+        className={`text-sm font-medium text-foreground/70 transition-colors duration-200 hover:text-foreground`}
+      >
+        {label}
       </Link>
-      <Link href={"/essays"} className={buttonVariants({ variant: "ghost" })}>
-        Essays
-      </Link>
-      <Link href="/" className={buttonVariants({ variant: "ghost" })}>
-        <span className="text-2xl font-bold">Y/A</span>
-      </Link>
-      <Link href={"/projects"} className={buttonVariants({ variant: "ghost" })}>
-        Projects
-      </Link>
-      <Link href={"/about"} className={buttonVariants({ variant: "ghost" })}>
-        About
-      </Link>
-    </div>
-  );
-};
+    ))}
+  </nav>
+);
 
 export { Navbar };

@@ -1,13 +1,16 @@
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
-const MarketingLayout = ({ children }: { children: React.ReactNode }) => {
+
+export default function MarketingLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className="bg-background min-h-screen pt-20">
+    <div className="min-h-screen bg-background pt-16 text-foreground">
       <Navbar />
       {children}
       <Footer />
     </div>
   );
-};
-
-export default MarketingLayout;
+}

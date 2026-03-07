@@ -3,35 +3,72 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import {
   NewTwitterIcon,
   InstagramIcon,
-  Facebook01Icon,
+  GithubIcon,
+  YoutubeIcon,
+  TelegramIcon,
 } from "@hugeicons/core-free-icons";
 
 const socialLinks = [
-  { href: "https://twitter.com", icon: NewTwitterIcon, label: "Twitter" },
-  { href: "https://instagram.com", icon: InstagramIcon, label: "Instagram" },
-  { href: "https://facebook.com", icon: Facebook01Icon, label: "Facebook" },
+  { href: "https://github.com/usufdev", icon: GithubIcon, label: "GitHub" },
+  { href: "https://t.me/usufdev", icon: TelegramIcon, label: "Telegram" },
+  {
+    href: "https://twitter.com/usufdev",
+    icon: NewTwitterIcon,
+    label: "Twitter",
+  },
+  {
+    href: "https://instagram.com/usufdev",
+    icon: InstagramIcon,
+    label: "Instagram",
+  },
+  { href: "https://youtube.com/@usufdev", icon: YoutubeIcon, label: "YouTube" },
 ];
 
 const Footer = () => (
-  <footer className="bg-background border-t border-black/[0.06] py-6">
-    <div className="mx-auto flex max-w-[680px] items-center justify-between gap-4 px-6 sm:px-8">
-      <p className="text-md font-medium">
-        七転び八起き · Fall seven times, rise eight.
-      </p>
-      <nav className="flex gap-3" aria-label="Social links">
-        {socialLinks.map(({ href, icon, label }) => (
+  <footer className="border-t border-border py-12">
+    <div className="mx-auto max-w-[680px] px-6 sm:px-8">
+      <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-wrap gap-6">
           <Link
-            key={label}
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-neutral-400 hover:text-neutral-600"
-            aria-label={label}
+            href="/about"
+            className="font-mono text-[13px] text-foreground/70 hover:text-foreground"
           >
-            <HugeiconsIcon icon={icon} className="size-4" strokeWidth={2} />
+            about
           </Link>
-        ))}
-      </nav>
+          <Link
+            href="/essays"
+            className="font-mono text-[13px] text-foreground/70 hover:text-foreground"
+          >
+            essays
+          </Link>
+          <Link
+            href="/talks"
+            className="font-mono text-[13px] text-foreground/70 hover:text-foreground"
+          >
+            talks
+          </Link>
+          <Link
+            href="/projects"
+            className="font-mono text-[13px] text-foreground/70 hover:text-foreground"
+          >
+            building
+          </Link>
+        </div>
+        <nav className="flex gap-4" aria-label="Social links">
+          {socialLinks.map(({ href, icon, label }) => (
+            <Link
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-foreground/70 transition-colors duration-200 hover:text-foreground"
+              aria-label={label}
+            >
+              <HugeiconsIcon icon={icon} className="size-4" strokeWidth={1.5} />
+            </Link>
+          ))}
+        </nav>
+      </div>
     </div>
   </footer>
 );
