@@ -14,9 +14,9 @@ export default function Home() {
           <span className="text-foreground/70">that people love.</span>
         </h1>
         <p className="max-w-[540px] text-[15px] leading-relaxed text-foreground/70">
-          i&apos;m a builder & engineer sharing lessons from many startups i
-          have founded & built, so you don&apos;t have to make the same
-          mistakes.
+          hey, i&apos;m Yusuf, a builder & engineer sharing lessons from many
+          startups i have founded & built, so you don&apos;t have to make the
+          same mistakes.
         </p>
         <div className="flex gap-2">
           <Button asChild>
