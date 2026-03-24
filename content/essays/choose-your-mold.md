@@ -1,5 +1,5 @@
 ---
-title: "Choosing Your Mold: The Art of Becoming Who You Were Meant to Be"
+title: "Choose your mold: The art of becoming who you meant to be."
 date: "2026-03-24"
 readTime: "6 min"
 description: "How people, habits, and information shape your future self, and why intentional curation is the key to growth."
