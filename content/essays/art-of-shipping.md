@@ -23,7 +23,6 @@ Clarity, not perfection, is what moves people.
 
 <img width="1536" height="1024" alt="ChatGPT Image Apr 3, 2026, 02_10_02 PM" src="https://github.com/user-attachments/assets/b7c40fc6-bd1a-40d3-821a-b58d4d83270a" />
 
-
 And yet clarity is difficult, because it requires restraint. It requires accepting that not everything can be included, not every edge case can be solved, not every user can be satisfied. To build anything meaningful is to choose, deliberately, who you are building for and, more importantly, who you are not.
 
 We spent months thinking about a product. Not simply designing it, but questioning it from every possible angle. Could it be understood by someone with little exposure to technology? Would it feel intuitive to someone younger, who we assume moves effortlessly through digital interfaces? Should it lean into artificial intelligence, or avoid it entirely in favor of something more direct?
@@ -73,6 +72,8 @@ Not because it marks the arrival of something perfect, but because it marks the 
 There will always be another feature to add, another improvement to make, another version that feels just slightly closer to what you envisioned. That tension does not disappear. It becomes part of the process.
 
 But momentum comes from choosing direction over doubt.
+
+<img width="1536" height="1024" alt="ChatGPT Image Apr 3, 2026, 03_26_13 PM" src="https://github.com/user-attachments/assets/7ff4fb3e-1bde-4772-8506-92a57898b6b5" />
 
 In the end, the question is not whether the product is everything it could be. It is whether you are willing to release it as it is, knowing that it will grow, adapt, and change in ways you cannot fully predict.
 
