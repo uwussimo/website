@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
@@ -23,7 +22,6 @@ const projects: {
   founded: string;
   status: string;
   link: string | null;
-  logo?: string | null;
 }[] = [
   {
     name: "mobile app",
@@ -63,7 +61,7 @@ const projects: {
     mrr: "$100",
     founded: "2023",
     status: "discontinued",
-    link: null,
+    link: "https://khmapp.org",
   },
   {
     name: "educator.uz",
@@ -73,7 +71,7 @@ const projects: {
     mrr: "$0",
     founded: "2019",
     status: "discontinued",
-    link: null,
+    link: "https://educator.uz",
   },
   {
     name: "Codeflow",
@@ -111,17 +109,21 @@ const statusConfig: Record<
   acquired: { variant: "outline", label: "Acquired" },
 };
 
-function ProjectLogo({ name, logo }: { name: string; logo?: string | null }) {
+function ProjectLogo({ name, link }: { name: string; link?: string | null }) {
+  const [faviconError, setFaviconError] = useState(false);
   const initial = name.charAt(0).toUpperCase();
+  const faviconUrl = link && !faviconError ? `${link.replace(/\/$/, "")}/favicon.ico` : null;
   return (
     <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary shadow-sm sm:size-16">
-      {logo ? (
-        <Image
-          src={logo}
+      {faviconUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={faviconUrl}
           alt={name}
           width={64}
           height={64}
-          className="size-full object-cover"
+          className="size-full object-contain p-2"
+          onError={() => setFaviconError(true)}
         />
       ) : (
         <span className="text-xl font-semibold text-foreground">{initial}</span>
@@ -182,7 +184,7 @@ export default function Projects() {
               rel="noopener noreferrer"
               className={cardClass}
             >
-              <ProjectLogo name={project.name} logo={project.logo} />
+              <ProjectLogo name={project.name} link={project.link} />
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div>
@@ -212,7 +214,7 @@ export default function Projects() {
             </Link>
           ) : (
             <div key={project.name} className={cn(cardClass, "cursor-default")}>
-              <ProjectLogo name={project.name} logo={project.logo} />
+              <ProjectLogo name={project.name} link={project.link} />
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div>
