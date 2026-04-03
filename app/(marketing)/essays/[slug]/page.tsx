@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
 import type { Metadata } from "next";
 import { getAllSlugs, getPostBySlug } from "@/lib/blog";
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
@@ -49,8 +50,8 @@ export default async function Essay({ params }: Props) {
           {post.title}
         </h1>
       </header>
-      <article className="space-y-6 [&_a]:text-foreground [&_a]:underline hover:[&_a]:text-foreground/80 [&_h2]:mt-10 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-foreground [&_p]:leading-relaxed [&_p]:text-foreground/70 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:text-foreground/70 [&_blockquote]:border-l-2 [&_blockquote]:border-foreground/10 [&_blockquote]:pl-4 [&_blockquote]:text-foreground/70 [&_blockquote]:not-italic">
-        <ReactMarkdown>{post.content}</ReactMarkdown>
+      <article className="space-y-6 [&_a]:text-foreground [&_a]:underline hover:[&_a]:text-foreground/80 [&_h2]:mt-10 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-foreground [&_img]:my-6 [&_img]:max-w-full [&_img]:rounded-md [&_p]:leading-relaxed [&_p]:text-foreground/70 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:text-foreground/70 [&_blockquote]:border-l-2 [&_blockquote]:border-foreground/10 [&_blockquote]:pl-4 [&_blockquote]:text-foreground/70 [&_blockquote]:not-italic">
+        <ReactMarkdown rehypePlugins={[rehypeRaw]}>{post.content}</ReactMarkdown>
       </article>
     </main>
   );
