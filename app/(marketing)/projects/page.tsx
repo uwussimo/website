@@ -112,7 +112,7 @@ const statusConfig: Record<
 function ProjectLogo({ name, link }: { name: string; link?: string | null }) {
   const [faviconError, setFaviconError] = useState(false);
   const initial = name.charAt(0).toUpperCase();
-  const faviconUrl = link && !faviconError ? `${link}/favicon.ico` : null;
+  const faviconUrl = link && !faviconError ? `${link.replace(/\/$/, "")}/favicon.ico` : null;
   return (
     <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-secondary shadow-sm sm:size-16">
       {faviconUrl ? (
