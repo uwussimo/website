@@ -57,6 +57,20 @@ export default function About() {
         </p>
       </article>
 
+      <section className="mt-16">
+        <h2 className="mb-4 font-mono text-xs font-medium uppercase tracking-[0.2em] text-foreground/70">
+          my playlist
+        </h2>
+        <iframe
+          src="https://open.spotify.com/embed/playlist/2HMFDNtUN8CzRy1vShvYDQ"
+          width="100%"
+          height="352"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+          className="rounded-2xl"
+        />
+      </section>
+
       <section className="mt-20 overflow-hidden pb-4" data-marquee>
         <div className="flex animate-marquee gap-4">
           {[...Array(2)].map((_, set) => (
