@@ -47,6 +47,9 @@ export default function RootLayout({
         className={`${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        <noscript>
+          <style>{"[data-reveal]{opacity:1;transform:none}"}</style>
+        </noscript>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           {children}
         </ThemeProvider>

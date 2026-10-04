@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { earlyDays, experience } from "@/lib/career";
+import { Artifact } from "@/components/artifact";
+import { Reveal } from "@/components/reveal";
 import { ExperienceItem } from "../_components/experience-item";
 
 export const metadata: Metadata = {
@@ -12,19 +14,29 @@ export const metadata: Metadata = {
 export default function Work() {
   return (
     <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[760px] px-6 pt-12 sm:px-8 sm:pt-16">
-      <header className="mb-12">
-        <h1 className="heading-serif">
-          where <em>i&apos;ve worked</em>
-        </h1>
-        <p className="lead mt-6">
-          every company i&apos;ve founded, built or worked at: for how long, and{" "}
-          <em>what i did there.</em>
-        </p>
+      <header className="mb-12 flex items-center justify-between gap-8">
+        <div>
+          <h1 className="heading-serif">
+            where <em>i&apos;ve worked</em>
+          </h1>
+          <p className="lead mt-6">
+            every company i&apos;ve founded, built or worked at: for how long,
+            and <em>what i did there.</em>
+          </p>
+        </div>
+        <Artifact
+          name="mirror-clock"
+          sizes="120px"
+          priority
+          className="hidden w-[110px] shrink-0 sm:flex"
+        />
       </header>
 
       <section className="border-b border-foreground/20">
         {experience.map((item) => (
-          <ExperienceItem key={item.company} experience={item} />
+          <Reveal key={item.company}>
+            <ExperienceItem experience={item} />
+          </Reveal>
         ))}
       </section>
 
@@ -38,7 +50,9 @@ export default function Work() {
         </p>
         <div className="border-b border-foreground/20">
           {earlyDays.map((item) => (
-            <ExperienceItem key={item.company} experience={item} />
+            <Reveal key={item.company}>
+              <ExperienceItem experience={item} />
+            </Reveal>
           ))}
         </div>
         <p className="lead mt-8">

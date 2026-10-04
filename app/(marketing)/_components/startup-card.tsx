@@ -18,6 +18,10 @@ function StartupLogo({ name, link }: { name: string; link: string | null }) {
           width={48}
           height={48}
           className="size-full object-contain p-2"
+          // a favicon that fails before hydration never fires onError
+          ref={(img) => {
+            if (img?.complete && img.naturalWidth === 0) setFaviconError(true);
+          }}
           onError={() => setFaviconError(true)}
         />
       ) : (
@@ -37,7 +41,7 @@ export function StartupCard({
   compact?: boolean;
 }) {
   const { name, role, desc, users, mrr, founded, status, link } = startup;
-  const cardClass = "card-soft block p-6 lowercase sm:p-8";
+  const cardClass = "card-soft pop block p-6 lowercase sm:p-8";
 
   const body = (
     <>

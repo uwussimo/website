@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { startups, statusLabels, type StartupStatus } from "@/lib/career";
+import { Reveal } from "@/components/reveal";
 import { StartupCard } from "./startup-card";
 
 const STATUS_FILTERS: ("all" | StartupStatus)[] = [
@@ -45,7 +46,9 @@ export function StartupList() {
 
       <div className="mt-8 space-y-6">
         {filteredStartups.map((startup) => (
-          <StartupCard key={startup.name} startup={startup} />
+          <Reveal key={startup.name}>
+            <StartupCard startup={startup} />
+          </Reveal>
         ))}
       </div>
 

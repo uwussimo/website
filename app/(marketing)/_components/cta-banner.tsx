@@ -1,6 +1,11 @@
+import { Reveal } from "@/components/reveal";
+
 export const CtaBanner = () => (
   <section className="mx-auto mt-28 max-w-[1040px] px-6 sm:px-8">
-    <div className="grain flex flex-col items-center rounded-[20px] px-6 py-16 text-center text-white shadow-[0_8px_40px_rgb(0_0_0/0.08)] sm:py-20">
+    <Reveal
+      variant="grow"
+      className="grain flex flex-col items-center rounded-[20px] px-6 py-16 text-center text-white shadow-[0_8px_40px_rgb(0_0_0/0.08)] sm:py-20"
+    >
       <h2 className="font-serif text-[36px] leading-[1.1] tracking-[-0.02em] sm:text-[52px]">
         let&apos;s build <em className="font-normal">something</em>
       </h2>
@@ -16,6 +21,6 @@ export const CtaBanner = () => (
       >
         say hi
       </a>
-    </div>
+    </Reveal>
   </section>
 );

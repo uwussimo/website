@@ -6,6 +6,7 @@ import {
   TelegramIcon,
 } from "@hugeicons/core-free-icons";
 import ThemeToggle from "./theme-toggle";
+import { Reveal } from "./reveal";
 
 const footerLinks = [
   { href: "/", label: "main" },
@@ -77,12 +78,14 @@ const Footer = () => (
         ))}
       </nav>
     </div>
-    <p
-      className="wordmark mx-auto -mb-[0.24em] mt-10 max-w-[1100px] select-none text-center font-serif text-[clamp(5rem,25vw,18rem)] leading-none tracking-[-0.03em]"
-      aria-hidden
-    >
-      usufdev
-    </p>
+    <Reveal>
+      <p
+        className="wordmark mx-auto -mb-[0.24em] mt-10 max-w-[1100px] select-none text-center font-serif text-[clamp(5rem,25vw,18rem)] leading-none tracking-[-0.03em]"
+        aria-hidden
+      >
+        usufdev
+      </p>
+    </Reveal>
   </footer>
 );
 

@@ -49,6 +49,7 @@
 }
 
 :root {
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --background: #f8f8f8;
   --foreground: #181818;
   --card: oklch(1 0 0);
@@ -127,7 +128,155 @@
 }
 
 .animate-marquee {
-  animation: marquee 30s linear infinite;
+  animation: marquee var(--marquee-duration, 30s) linear infinite;
+}
+
+.marquee-fade {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black 8%,
+    black 92%,
+    transparent
+  );
+}
+
+@keyframes sway {
+  from {
+    transform: rotate(-2.2deg);
+  }
+  to {
+    transform: rotate(2.2deg);
+  }
+}
+
+/* hangs from its ring, like a pendulum */
+.animate-sway {
+  transform-origin: 50% 3%;
+  animation: sway 5s ease-in-out infinite alternate;
+}
+
+@keyframes float {
+  from {
+    transform: translateY(-6px);
+  }
+  to {
+    transform: translateY(8px);
+  }
+}
+
+.animate-float {
+  animation: float 5.5s ease-in-out infinite alternate;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+}
+
+.animate-rise {
+  animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.page-enter {
+  animation: page-enter 0.5s ease-out both;
+}
+
+/* scroll reveals, switched on by components/reveal.tsx */
+[data-reveal] {
+  opacity: 0;
+  transition:
+    opacity 0.8s cubic-bezier(0.2, 0.7, 0.2, 1),
+    transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+[data-reveal="up"] {
+  transform: translateY(28px);
+}
+
+[data-reveal="left"] {
+  transform: translateX(-40px);
+}
+
+[data-reveal="right"] {
+  transform: translateX(40px);
+}
+
+[data-reveal="grow"] {
+  transform: scale(0.92);
+}
+
+[data-reveal][data-visible] {
+  opacity: 1;
+  transform: none;
+}
+
+/* the hero image drifts up and shrinks a little as the page scrolls */
+@supports (animation-timeline: scroll()) {
+  @keyframes hero-drift {
+    to {
+      transform: translateY(-70px) scale(0.94);
+    }
+  }
+
+  .hero-drift {
+    animation: hero-drift linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 800px;
+  }
+}
+
+@keyframes shimmer {
+  to {
+    background-position: 100% 0;
+  }
+}
+
+@keyframes glow-drift {
+  to {
+    background-position:
+      0 0,
+      70% 30%,
+      20% 70%,
+      40% 20%,
+      80% 60%;
+  }
+}
+
+@media print {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee,
+  .animate-sway,
+  .animate-float,
+  .animate-rise,
+  .page-enter,
+  .hero-drift,
+  .wordmark,
+  .grain {
+    animation: none !important;
+  }
+
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 [data-marquee]:hover .animate-marquee {
@@ -184,11 +333,45 @@
   .grain {
     background-color: #7d9794;
     background-image:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-      radial-gradient(ellipse 34% 60% at 46% 62%, #f0a35c 0%, transparent 70%),
-      radial-gradient(ellipse 30% 70% at 30% 40%, #8a2f12 0%, transparent 75%),
-      radial-gradient(ellipse 30% 75% at 66% 50%, #c4521d 0%, transparent 72%),
-      radial-gradient(ellipse 18% 30% at 40% 4%, #2f79c2 0%, transparent 80%);
+      var(--noise),
+      radial-gradient(ellipse 34% 60% at 50% 50%, #f0a35c 0%, transparent 70%),
+      radial-gradient(ellipse 30% 70% at 50% 50%, #8a2f12 0%, transparent 75%),
+      radial-gradient(ellipse 30% 75% at 50% 50%, #c4521d 0%, transparent 72%),
+      radial-gradient(ellipse 18% 30% at 50% 50%, #2f79c2 0%, transparent 80%);
+    background-size:
+      240px 240px,
+      140% 140%,
+      140% 140%,
+      140% 140%,
+      140% 140%;
+    background-position:
+      0 0,
+      35% 75%,
+      75% 25%,
+      20% 55%,
+      55% 0%;
+    animation: glow-drift 14s ease-in-out infinite alternate;
+  }
+
+  /* essay posters: two glows over a base color, set per card */
+  .poster {
+    background-color: var(--base);
+    background-image:
+      var(--noise),
+      linear-gradient(180deg, transparent 35%, rgb(0 0 0 / 0.4) 100%),
+      radial-gradient(120% 80% at 15% 5%, var(--a) 0%, transparent 60%),
+      radial-gradient(100% 90% at 95% 35%, var(--b) 0%, transparent 65%);
+  }
+
+  /* hover: pops up with a little overshoot, settles back on leave */
+  .pop {
+    transition:
+      transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.3s ease;
+  }
+
+  .pop:hover {
+    transform: scale(1.03) rotate(-0.7deg);
   }
 
   .wordmark {
@@ -200,9 +383,11 @@
       #f2c08f 80%,
       #c9773d 100%
     );
+    background-size: 220% 100%;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    animation: shimmer 9s ease-in-out infinite alternate;
   }
 
   .dark .wordmark {

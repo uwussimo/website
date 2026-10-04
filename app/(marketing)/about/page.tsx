@@ -1,5 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { Artifact } from "@/components/artifact";
+import { Reveal } from "@/components/reveal";
 
 export const metadata: Metadata = {
   title: "About me | Mukhammadyusuf Abdurakhimov",
@@ -51,6 +53,10 @@ export default function About() {
           things people actually want to use.
         </p>
       </article>
+
+      <Reveal variant="grow" className="mx-auto mt-20 w-[280px] sm:w-[420px]">
+        <Artifact name="lion" sizes="(min-width: 640px) 420px, 280px" />
+      </Reveal>
 
       <section className="mt-24">
         <h2 className="heading-serif mb-6">
