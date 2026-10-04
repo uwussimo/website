@@ -13,6 +13,16 @@ export type Startup = {
 
 export const startups: Startup[] = [
   {
+    name: "oqim.app",
+    role: "Founder",
+    desc: "a creator ecosystem for central asia: a ugc marketplace, a family of creator tools, and palantir-level access to market data.",
+    users: "600+ creators",
+    mrr: "NDA",
+    founded: "2026",
+    status: "active",
+    link: "https://oqim.app",
+  },
+  {
     name: "mobile app",
     role: "builder",
     desc: "ai powered gamified application to reclaim attention, time and focus. currently in development phase.",
@@ -111,6 +121,22 @@ export type Experience = {
 };
 
 export const experience: Experience[] = [
+  {
+    company: "oqim.app",
+    link: "https://oqim.app",
+    role: "Founder",
+    start: "2026-04",
+    end: "present",
+    summary:
+      "a creator ecosystem for central asia. brands meet creators on a ugc marketplace, creators get a family of tools on one account, and we have palantir-level access to market data.",
+    highlights: [
+      "600+ creators on the marketplace, 2,500+ content creators across the ecosystem",
+      "ugc marketplace: brands brief a campaign and pay per view, creators post reels and get paid",
+      "atlas: a live map of the market's creators, content and brands",
+      "creator tools: chat for instagram dms, canvas for ai-made visuals, obio for link-in-bio, and more",
+      "creator apps for ios and android",
+    ],
+  },
   {
     company: "JustOrder",
     role: "Consultant",

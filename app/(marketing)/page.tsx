@@ -8,7 +8,7 @@ import { StartupCard } from "./_components/startup-card";
 import { EssayMarquee } from "./_components/essay-marquee";
 import { CtaBanner } from "./_components/cta-banner";
 
-const FEATURED_STARTUPS = ["42.uz", "optochka.com", "educator.uz"];
+const FEATURED_STARTUPS = ["oqim.app", "42.uz", "optochka.com", "educator.uz"];
 
 const delay = (ms: number) => ({ "--delay": `${ms}ms` }) as React.CSSProperties;
 
@@ -24,7 +24,7 @@ export default function Home() {
       label: "startups founded, built or advised",
     },
     { value: "13.7k+", label: "learners on 42.uz" },
-    { value: "100k+", label: "visits to khmapp in its first two months" },
+    { value: "600+", label: "creators on oqim's marketplace" },
     { value: String(posts.length), label: "essays on building & shipping" },
   ];
 
