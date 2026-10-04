@@ -1,12 +1,8 @@
 export default function Terms() {
   return (
-    <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[680px] px-6 pb-24 pt-20 sm:px-8">
-      <h1 className="mb-10 font-mono text-xs font-medium uppercase tracking-[0.2em] text-foreground/70">
-        terms and conditions
-      </h1>
-      <p className="text-[15px] leading-relaxed text-foreground/70">
-        terms and conditions page. to be updated.
-      </p>
+    <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[760px] px-6 pt-12 sm:px-8 sm:pt-16">
+      <h1 className="heading-serif mb-8">terms and conditions</h1>
+      <p className="lead">terms and conditions page. to be updated.</p>
     </main>
   );
 }

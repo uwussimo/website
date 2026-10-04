@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Figtree } from "next/font/google";
+import { Geist_Mono, Manrope, Newsreader } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TopLoader } from "@/components/providers/top-loader";
 import { ThemeProvider } from "@/components/providers/theme";
 import { UmamiAnalytics } from "@/components/providers/umami";
 
-const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const newsreader = Newsreader({
   subsets: ["latin"],
+  style: ["normal", "italic"],
+  variable: "--font-newsreader",
 });
 
 const geistMono = Geist_Mono({
@@ -19,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "usuf.dev   building products that people love",
+  title: "usufdev   building products that people love",
   description:
     "Builder & engineer sharing lessons from startups I've founded & built. From Uzbekistan to United States.",
   viewport: {
@@ -39,11 +40,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("font-sans", figtree.variable)}
+      className={cn("font-sans", manrope.variable, newsreader.variable)}
       suppressHydrationWarning
     >
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>

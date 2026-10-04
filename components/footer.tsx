@@ -5,6 +5,16 @@ import {
   GithubIcon,
   TelegramIcon,
 } from "@hugeicons/core-free-icons";
+import ThemeToggle from "./theme-toggle";
+
+const footerLinks = [
+  { href: "/", label: "main" },
+  { href: "/about", label: "about" },
+  { href: "/essays", label: "essays" },
+  { href: "/startups", label: "startups" },
+  { href: "/work", label: "work" },
+  { href: "/talks", label: "talks" },
+];
 
 const socialLinks = [
   {
@@ -26,51 +36,53 @@ const socialLinks = [
 ];
 
 const Footer = () => (
-  <footer className="bg-background border-t border-border py-12">
-    <div className="mx-auto max-w-[680px] px-6 sm:px-8">
-      <div className="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-        <div className="flex flex-wrap gap-6">
-          <Link
-            href="/about"
-            className="text-foreground font-mono text-sm hover:text-foreground/80"
-          >
-            about
-          </Link>
-          <Link
-            href="/essays"
-            className="text-foreground font-mono text-sm hover:text-foreground/80"
-          >
-            essays
-          </Link>
-          <Link
-            href="/talks"
-            className="text-foreground font-mono text-sm hover:text-foreground/80"
-          >
-            talks
-          </Link>
-          <Link
-            href="/projects"
-            className="text-foreground font-mono text-sm hover:text-foreground/80"
-          >
-            building
-          </Link>
-        </div>
-        <nav className="flex gap-4" aria-label="Social links">
+  <footer className="mt-28 overflow-hidden">
+    <div className="mx-auto flex max-w-[1040px] flex-col gap-10 px-6 sm:flex-row sm:justify-between sm:px-8">
+      <div>
+        <Link href="/" className="font-serif text-[26px] leading-none">
+          usufdev
+        </Link>
+        <p className="mt-3 max-w-[260px] text-[14px] font-medium leading-snug">
+          a builder & engineer sharing lessons from startups.
+        </p>
+        <nav className="mt-5 flex items-center gap-5" aria-label="Social links">
           {socialLinks.map(({ href, icon, label }) => (
             <Link
               key={label}
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-foreground transition-colors duration-200 hover:text-foreground/80"
+              className="text-foreground transition-colors duration-200 hover:text-foreground/60"
               aria-label={label}
             >
-              <HugeiconsIcon icon={icon} className="size-4" strokeWidth={1.5} />
+              <HugeiconsIcon icon={icon} className="size-5" strokeWidth={1.5} />
             </Link>
           ))}
+          <ThemeToggle />
         </nav>
+        <p className="mt-5 text-[12px] text-foreground/70">
+          © {new Date().getFullYear()} - made with love and care for readers
+          like you
+        </p>
       </div>
+      <nav className="flex flex-col gap-2.5" aria-label="Footer">
+        {footerLinks.map(({ href, label }) => (
+          <Link
+            key={label}
+            href={href}
+            className="text-[15px] text-foreground hover:underline"
+          >
+            {label}
+          </Link>
+        ))}
+      </nav>
     </div>
+    <p
+      className="wordmark mx-auto -mb-[0.24em] mt-10 max-w-[1100px] select-none text-center font-serif text-[clamp(5rem,25vw,18rem)] leading-none tracking-[-0.03em]"
+      aria-hidden
+    >
+      usufdev
+    </p>
   </footer>
 );
 

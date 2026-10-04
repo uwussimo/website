@@ -9,57 +9,52 @@ export const metadata: Metadata = {
 
 export default function About() {
   return (
-    <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[680px] px-6 pb-24 pt-20 sm:px-8">
+    <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[760px] px-6 pt-12 sm:px-8 sm:pt-16">
       <section className="mb-12">
-        <h1 className="mb-2 font-mono text-xs font-medium uppercase tracking-[0.2em] text-foreground/70">
-          about me
+        <p className="meta mb-3">about me</p>
+        <h1 className="heading-serif mb-8">
+          i write about <em>product development & startups.</em>
         </h1>
-        <p className="mb-8 text-2xl font-medium tracking-tight text-foreground sm:text-3xl">
-          i write about product development & startups.
-        </p>
-        <div className="flex flex-wrap gap-4">
-          <Link
-            href="/talks"
-            className="font-mono text-[13px] text-foreground hover:underline"
-          >
-            my talks
+        <div className="flex flex-wrap gap-6 text-[18px] font-bold">
+          <Link href="/work" className="link-dashed">
+            where i&apos;ve worked
           </Link>
-          <Link
-            href="/essays"
-            className="font-mono text-[13px] text-foreground hover:underline"
-          >
+          <Link href="/essays" className="link-dashed">
             read essays
+          </Link>
+          <Link href="/talks" className="link-dashed">
+            my talks
           </Link>
         </div>
       </section>
 
       <article>
-        <p className="text-[15px] leading-relaxed text-foreground/70">
+        <p className="lead">
           i grew up around people who were curious about technology. that
           curiosity stuck. i started building things early websites, small apps,
           ideas that didn&apos;t always work. some did.
         </p>
-        <p className="mt-6 text-[15px] leading-relaxed text-foreground/70">
+        <p className="lead mt-6">
           after school i co-founded an edtech startup. we reached thousands of
           students. we won something. more importantly, i learned what it means
           to ship, to fail, and to try again.
         </p>
-        <p className="mt-6 text-[15px] leading-relaxed text-foreground/70">
+        <p className="lead mt-6">
           i&apos;ve worked at scale, built s-commerce platforms, moved across
           continents. these days you might find me organising events, streaming
           on a quiet sunday, or speaking at a tech conference. i like to learn,
           share, and sometimes inspire.
         </p>
-        <p className="mt-6 text-[15px] leading-relaxed text-foreground/70">
+        <p className="lead mt-6">
           i believe the best products come from teams who care about their
           users. i&apos;m that guy who likes creating and telling stories about
           things people actually want to use.
         </p>
       </article>
 
-      <section className="mt-16">
-        <h2 className="mb-4 font-mono text-xs font-medium uppercase tracking-[0.2em] text-foreground/70">
-          my playlist
+      <section className="mt-24">
+        <h2 className="heading-serif mb-6">
+          my <em>playlist</em>
         </h2>
         <iframe
           src="https://open.spotify.com/embed/playlist/2HMFDNtUN8CzRy1vShvYDQ"
@@ -90,9 +85,9 @@ export default function About() {
                     transform: `rotate(${[-2, 1, -1, 2, -1, 1][i]}deg)`,
                   }}
                 >
-                  <div className="w-36 border-4 border-border bg-secondary p-2 pb-6 shadow-lg transition-all duration-200 group-hover:scale-110 group-hover:rotate-0 group-hover:shadow-xl sm:w-40">
-                    <div className="aspect-[4/5] bg-background" />
-                    <p className="mt-2 text-center font-mono text-[11px] text-foreground/70">
+                  <div className="w-36 border border-border bg-card p-2 pb-6 shadow-lg transition-all duration-200 group-hover:scale-110 group-hover:rotate-0 group-hover:shadow-xl sm:w-40">
+                    <div className="aspect-[4/5] bg-secondary" />
+                    <p className="meta mt-2 text-center text-[13px]">
                       {caption}
                     </p>
                   </div>

@@ -7,25 +7,22 @@ export const PostCard = ({
 }: {
   post: { date: string; readTime: string; title: string; href: string };
 }) => (
-  <article className="group flex flex-col gap-2 py-5 md:flex-row md:items-start md:justify-between md:gap-4">
+  <article className="border-b border-foreground/20">
     <Link
       href={post.href}
-      className="flex min-w-0 flex-1 items-center gap-2 text-[17px] font-medium leading-snug tracking-[-0.02em] text-foreground transition-colors hover:underline"
+      className="group flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
     >
-      <span className="min-w-0 flex-1">{post.title}</span>
-      <HugeiconsIcon
-        icon={ArrowRight01Icon}
-        className="size-4 shrink-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
-        strokeWidth={1.5}
-      />
+      <span className="min-w-0 flex-1 text-[18px] font-medium leading-snug tracking-[-0.01em] text-foreground sm:text-[20px]">
+        {post.title}
+      </span>
+      <span className="meta flex shrink-0 items-center gap-2">
+        {post.date} · {post.readTime} read
+        <HugeiconsIcon
+          icon={ArrowRight01Icon}
+          className="size-4 transition-transform duration-200 group-hover:translate-x-1"
+          strokeWidth={1.5}
+        />
+      </span>
     </Link>
-    <div className="flex shrink-0 gap-4 text-right md:flex-col md:gap-0.5">
-      <span className="font-mono text-[12px] text-foreground/70">
-        {post.date}
-      </span>
-      <span className="font-mono text-[12px] text-foreground/70">
-        {post.readTime} read
-      </span>
-    </div>
   </article>
 );

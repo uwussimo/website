@@ -30,10 +30,10 @@ export default async function Essay({ params }: Props) {
   if (!post) notFound();
 
   return (
-    <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[680px] px-6 pb-24 pt-20 sm:px-8">
+    <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[760px] px-6 pt-12 sm:px-8 sm:pt-16">
       <Link
         href="/essays"
-        className="mb-8 inline-flex items-center gap-2 font-mono text-[13px] text-foreground/70 hover:text-foreground"
+        className="meta mb-8 inline-flex items-center gap-2 hover:text-foreground"
       >
         <HugeiconsIcon
           icon={ArrowLeft01Icon}
@@ -43,15 +43,15 @@ export default async function Essay({ params }: Props) {
         essays
       </Link>
       <header className="mb-10">
-        <p className="font-mono text-[12px] text-foreground/70">
+        <p className="meta">
           {post.date} · {post.readTime} read
         </p>
-        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-          {post.title}
-        </h1>
+        <h1 className="heading-serif mt-3">{post.title}</h1>
       </header>
-      <article className="space-y-6 [&_a]:text-foreground [&_a]:underline hover:[&_a]:text-foreground/80 [&_h2]:mt-10 [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:text-foreground [&_img]:my-6 [&_img]:max-w-full [&_img]:rounded-md [&_p]:leading-relaxed [&_p]:text-foreground/70 [&_ul]:list-inside [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:text-foreground/70 [&_blockquote]:border-l-2 [&_blockquote]:border-foreground/10 [&_blockquote]:pl-4 [&_blockquote]:text-foreground/70 [&_blockquote]:not-italic">
-        <ReactMarkdown rehypePlugins={[rehypeRaw]}>{post.content}</ReactMarkdown>
+      <article className="space-y-6 text-[18px] [&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-foreground/80 [&_h2]:mt-12 [&_h2]:font-serif [&_h2]:text-[28px] [&_h2]:leading-tight [&_h2]:text-foreground [&_img]:my-6 [&_img]:max-w-full [&_img]:rounded-md [&_p]:leading-[1.6] [&_p]:text-foreground/85 [&_strong]:text-foreground [&_ul]:list-inside [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:text-foreground/85 [&_blockquote]:border-l-2 [&_blockquote]:border-foreground/20 [&_blockquote]:pl-4 [&_blockquote]:font-serif [&_blockquote]:text-[20px] [&_blockquote]:text-foreground/85 [&_blockquote]:not-italic">
+        <ReactMarkdown rehypePlugins={[rehypeRaw]}>
+          {post.content}
+        </ReactMarkdown>
       </article>
     </main>
   );

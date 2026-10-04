@@ -5,11 +5,11 @@ export default function Essays() {
   const posts = getAllPosts();
 
   return (
-    <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[680px] px-6 pb-24 pt-20 sm:px-8">
-      <h1 className="mb-10 font-mono text-xs font-medium uppercase tracking-[0.2em] text-foreground/70">
-        essays
+    <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[760px] px-6 pt-12 sm:px-8 sm:pt-16">
+      <h1 className="heading-serif mb-10">
+        <em>essays</em>
       </h1>
-      <div className="divide-y divide-border">
+      <div className="border-t border-foreground/20">
         {posts.map((post) => (
           <PostCard
             key={post.slug}
@@ -22,11 +22,7 @@ export default function Essays() {
           />
         ))}
       </div>
-      {posts.length === 0 && (
-        <p className="font-mono text-[13px] text-foreground/70">
-          no essays yet.
-        </p>
-      )}
+      {posts.length === 0 && <p className="meta mt-6">no essays yet.</p>}
     </main>
   );
 }
