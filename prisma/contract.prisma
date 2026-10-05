@@ -1,0 +1,133 @@
+// use prisma-8
+
+// --- admin sign-in
+
+model AdminUser {
+  id             String             @id @default(uuid())
+  email          String             @unique
+  passwordHash   String
+  failedAttempts Int                @default(0)
+  lockedUntil    TimestamptzString?
+  createdAt      TimestamptzString  @default(now())
+}
+
+model Session {
+  id        String            @id @default(uuid())
+  tokenHash String            @unique
+  userId    String
+  expiresAt TimestamptzString
+  createdAt TimestamptzString @default(now())
+
+  @@index([userId])
+}
+
+// --- uploaded images (logos, polaroids, photos), stored as webp
+
+model Media {
+  id        String            @id @default(uuid())
+  data      Bytes
+  mimeType  String
+  width     Int
+  height    Int
+  createdAt TimestamptzString @default(now())
+}
+
+// --- site content
+
+model Startup {
+  id          String  @id @default(uuid())
+  slug        String  @unique
+  name        String
+  role        String
+  description String
+  users       String
+  mrr         String
+  founded     String
+  // active | stealth | discontinued | acquired
+  status      String
+  link        String?
+  logoId      String?
+  featured    Boolean @default(false)
+  sortOrder   Int     @default(0)
+}
+
+model Experience {
+  id         String   @id @default(uuid())
+  // work | education | early
+  kind       String
+  company    String
+  // ties the entry to its polaroids; shared with a startup of the same slug
+  slug       String?
+  link       String?
+  role       String
+  // "YYYY" or "YYYY-MM"; endDate may also be "present"
+  startDate  String?
+  endDate    String?
+  // shown instead of dates when there are none, e.g. "age 17"
+  whenLabel  String?
+  note       String?
+  location   String?
+  summary    String?
+  highlights String[]
+  sortOrder  Int      @default(0)
+
+  @@index([kind])
+}
+
+model Polaroid {
+  id        String @id @default(uuid())
+  ownerSlug String
+  mediaId   String
+  caption   String
+  sortOrder Int    @default(0)
+
+  @@index([ownerSlug])
+}
+
+model Essay {
+  id          String  @id @default(uuid())
+  slug        String  @unique
+  title       String
+  // YYYY-MM-DD
+  date        String
+  readTime    String
+  description String?
+  content     String
+  published   Boolean @default(true)
+}
+
+model Talk {
+  id        String  @id @default(uuid())
+  title     String
+  place     String
+  dateLabel String
+  text      String?
+  href      String?
+  photoId   String?
+  photoAlt  String?
+  sortOrder Int     @default(0)
+}
+
+model Place {
+  id         String  @id @default(uuid())
+  name       String
+  latitude   Float
+  longitude  Float
+  photoId    String?
+  photoAlt   String?
+  // css object-position, to keep the subject in the crop
+  photoFocus String?
+  sortOrder  Int     @default(0)
+}
+
+model InstagramPost {
+  id        String  @id @default(uuid())
+  href      String
+  mediaId   String
+  alt       String
+  caption   String
+  place     String
+  dateLabel String
+  focus     String?
+  sortOrder Int     @default(0)
+}

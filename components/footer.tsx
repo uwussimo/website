@@ -3,6 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import {
   NewTwitterIcon,
   GithubIcon,
+  InstagramIcon,
   TelegramIcon,
 } from "@hugeicons/core-free-icons";
 import ThemeToggle from "./theme-toggle";
@@ -28,6 +29,11 @@ const socialLinks = [
     href: "https://twitter.com/uwussimo",
     icon: NewTwitterIcon,
     label: "Yusuf Abdurakhimov's Twitter page",
+  },
+  {
+    href: "https://www.instagram.com/usufdev/",
+    icon: InstagramIcon,
+    label: "Yusuf Abdurakhimov's Instagram page",
   },
   {
     href: "https://t.me/TenxStartuper",

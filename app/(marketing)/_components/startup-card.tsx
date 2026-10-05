@@ -2,15 +2,36 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { statusLabels, type Startup } from "@/lib/career";
+import Image from "next/image";
+import { statusLabels } from "@/lib/career";
+import type { Photo, Startup } from "@/lib/content";
+import { mediaUrl } from "@/lib/media-url";
+import { Polaroids } from "@/components/polaroids";
 
-function StartupLogo({ name, link }: { name: string; link: string | null }) {
+// an uploaded logo wins; otherwise the site's favicon, then the first letter
+function StartupLogo({
+  name,
+  link,
+  logoId,
+}: {
+  name: string;
+  link: string | null;
+  logoId: string | null;
+}) {
   const [faviconError, setFaviconError] = useState(false);
   const faviconUrl =
     link && !faviconError ? `${link.replace(/\/$/, "")}/favicon.ico` : null;
   return (
-    <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-secondary">
-      {faviconUrl ? (
+    <div className="relative flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-secondary">
+      {logoId ? (
+        <Image
+          src={mediaUrl(logoId)}
+          alt={name}
+          fill
+          sizes="48px"
+          className="object-contain p-2"
+        />
+      ) : faviconUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={faviconUrl}
@@ -35,18 +56,21 @@ function StartupLogo({ name, link }: { name: string; link: string | null }) {
 
 export function StartupCard({
   startup,
+  photos = [],
   compact = false,
 }: {
   startup: Startup;
+  photos?: Photo[];
   compact?: boolean;
 }) {
-  const { name, role, desc, users, mrr, founded, status, link } = startup;
+  const { name, role, description, users, mrr, founded, status, link, logoId } =
+    startup;
   const cardClass = "card-soft pop block p-6 lowercase sm:p-8";
 
   const body = (
     <>
       <div className="flex items-center gap-4">
-        <StartupLogo name={name} link={link} />
+        <StartupLogo name={name} link={link} logoId={logoId} />
         <div className="min-w-0 flex-1">
           <h3 className="font-serif text-[26px] leading-tight text-foreground">
             {name}
@@ -61,10 +85,12 @@ export function StartupCard({
               : "border border-border text-foreground/70",
           )}
         >
-          {statusLabels[status]}
+          {statusLabels[status] ?? status}
         </span>
       </div>
-      <p className="mt-5 text-[16px] leading-[1.55] text-foreground">{desc}</p>
+      <p className="mt-5 text-[16px] leading-[1.55] text-foreground">
+        {description}
+      </p>
       {!compact && (
         <dl className="mt-5 flex flex-wrap gap-x-10 gap-y-3">
           {[
@@ -81,6 +107,7 @@ export function StartupCard({
           ))}
         </dl>
       )}
+      {!compact && <Polaroids photos={photos} label={name} />}
     </>
   );
 

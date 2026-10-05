@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Artifact } from "@/components/artifact";
+import { getPolaroids, getStartups } from "@/lib/content";
 import { StartupList } from "../_components/startup-list";
 
 export const metadata: Metadata = {
@@ -8,7 +8,9 @@ export const metadata: Metadata = {
     "Startups I've founded, built and advised: what they do, where they got to, and where they are now.",
 };
 
-export default function Startups() {
+export default async function Startups() {
+  const [startups, photos] = await Promise.all([getStartups(), getPolaroids()]);
+
   return (
     <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[760px] px-6 pt-12 sm:px-8 sm:pt-16">
       <header className="mb-10 flex items-center justify-between gap-8">
@@ -20,15 +22,9 @@ export default function Startups() {
             i help startups to launch fast and reach the market quickly.
           </p>
         </div>
-        <Artifact
-          name="lion-clock"
-          sizes="120px"
-          priority
-          className="hidden w-[110px] shrink-0 sm:flex"
-        />
       </header>
 
-      <StartupList />
+      <StartupList startups={startups} photos={photos} />
 
       <p className="meta mt-16 text-center">coming soon</p>
     </main>

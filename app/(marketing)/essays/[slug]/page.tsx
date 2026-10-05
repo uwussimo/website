@@ -3,30 +3,30 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import type { Metadata } from "next";
-import { getAllSlugs, getPostBySlug } from "@/lib/blog";
+import { getEssay, getEssays } from "@/lib/content";
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
-  const slugs = getAllSlugs();
-  return slugs.map((slug) => ({ slug }));
+  const essays = await getEssays();
+  return essays.map(({ slug }) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getEssay(slug);
   if (!post) return { title: "Essay not found" };
   return {
     title: post.title,
-    description: post.description,
+    description: post.description ?? undefined,
   };
 }
 
 export default async function Essay({ params }: Props) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = await getEssay(slug);
   if (!post) notFound();
 
   return (

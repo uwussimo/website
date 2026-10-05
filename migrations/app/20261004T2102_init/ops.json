@@ -1,0 +1,694 @@
+[
+  {
+    "id": "schema.public",
+    "label": "Create schema \"public\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres"
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Create schema \"public\"",
+        "sql": "CREATE SCHEMA IF NOT EXISTS \"public\"",
+        "params": []
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "table.AdminUser",
+    "label": "Create table \"AdminUser\"",
+    "summary": "Creates table \"AdminUser\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "AdminUser"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"AdminUser\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"AdminUser\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"AdminUser\"",
+        "sql": "CREATE TABLE \"public\".\"AdminUser\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"email\" text NOT NULL,\n  \"failedAttempts\" int4 DEFAULT 0 NOT NULL,\n  \"id\" text NOT NULL,\n  \"lockedUntil\" timestamptz,\n  \"passwordHash\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"AdminUser\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"AdminUser\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Essay",
+    "label": "Create table \"Essay\"",
+    "summary": "Creates table \"Essay\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Essay"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Essay\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Essay\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Essay\"",
+        "sql": "CREATE TABLE \"public\".\"Essay\" (\n  \"content\" text NOT NULL,\n  \"date\" text NOT NULL,\n  \"description\" text,\n  \"id\" text NOT NULL,\n  \"published\" bool DEFAULT true NOT NULL,\n  \"readTime\" text NOT NULL,\n  \"slug\" text NOT NULL,\n  \"title\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Essay\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Essay\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Experience",
+    "label": "Create table \"Experience\"",
+    "summary": "Creates table \"Experience\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Experience"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Experience\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Experience\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Experience\"",
+        "sql": "CREATE TABLE \"public\".\"Experience\" (\n  \"company\" text NOT NULL,\n  \"endDate\" text,\n  \"highlights\" text[] NOT NULL,\n  \"id\" text NOT NULL,\n  \"kind\" text NOT NULL,\n  \"link\" text,\n  \"location\" text,\n  \"note\" text,\n  \"role\" text NOT NULL,\n  \"slug\" text,\n  \"sortOrder\" int4 DEFAULT 0 NOT NULL,\n  \"startDate\" text,\n  \"summary\" text,\n  \"whenLabel\" text,\n  PRIMARY KEY (\"id\"),\n  CONSTRAINT \"Experience_highlights_elem_not_null_1a2363a4\" CHECK (array_position(\"highlights\", NULL) IS NULL)\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Experience\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Experience\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.InstagramPost",
+    "label": "Create table \"InstagramPost\"",
+    "summary": "Creates table \"InstagramPost\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "InstagramPost"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"InstagramPost\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"InstagramPost\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"InstagramPost\"",
+        "sql": "CREATE TABLE \"public\".\"InstagramPost\" (\n  \"alt\" text NOT NULL,\n  \"caption\" text NOT NULL,\n  \"dateLabel\" text NOT NULL,\n  \"focus\" text,\n  \"href\" text NOT NULL,\n  \"id\" text NOT NULL,\n  \"mediaId\" text NOT NULL,\n  \"place\" text NOT NULL,\n  \"sortOrder\" int4 DEFAULT 0 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"InstagramPost\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"InstagramPost\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Media",
+    "label": "Create table \"Media\"",
+    "summary": "Creates table \"Media\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Media"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Media\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Media\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Media\"",
+        "sql": "CREATE TABLE \"public\".\"Media\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"data\" bytea NOT NULL,\n  \"height\" int4 NOT NULL,\n  \"id\" text NOT NULL,\n  \"mimeType\" text NOT NULL,\n  \"width\" int4 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Media\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Media\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Place",
+    "label": "Create table \"Place\"",
+    "summary": "Creates table \"Place\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Place"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Place\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Place\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Place\"",
+        "sql": "CREATE TABLE \"public\".\"Place\" (\n  \"id\" text NOT NULL,\n  \"latitude\" float8 NOT NULL,\n  \"longitude\" float8 NOT NULL,\n  \"name\" text NOT NULL,\n  \"photoAlt\" text,\n  \"photoFocus\" text,\n  \"photoId\" text,\n  \"sortOrder\" int4 DEFAULT 0 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Place\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Place\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Polaroid",
+    "label": "Create table \"Polaroid\"",
+    "summary": "Creates table \"Polaroid\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Polaroid"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Polaroid\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Polaroid\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Polaroid\"",
+        "sql": "CREATE TABLE \"public\".\"Polaroid\" (\n  \"caption\" text NOT NULL,\n  \"id\" text NOT NULL,\n  \"mediaId\" text NOT NULL,\n  \"ownerSlug\" text NOT NULL,\n  \"sortOrder\" int4 DEFAULT 0 NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Polaroid\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Polaroid\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Session",
+    "label": "Create table \"Session\"",
+    "summary": "Creates table \"Session\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Session"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Session\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Session\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Session\"",
+        "sql": "CREATE TABLE \"public\".\"Session\" (\n  \"createdAt\" timestamptz DEFAULT (now()) NOT NULL,\n  \"expiresAt\" timestamptz NOT NULL,\n  \"id\" text NOT NULL,\n  \"tokenHash\" text NOT NULL,\n  \"userId\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Session\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Session\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Startup",
+    "label": "Create table \"Startup\"",
+    "summary": "Creates table \"Startup\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Startup"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Startup\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Startup\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Startup\"",
+        "sql": "CREATE TABLE \"public\".\"Startup\" (\n  \"description\" text NOT NULL,\n  \"featured\" bool DEFAULT false NOT NULL,\n  \"founded\" text NOT NULL,\n  \"id\" text NOT NULL,\n  \"link\" text,\n  \"logoId\" text,\n  \"mrr\" text NOT NULL,\n  \"name\" text NOT NULL,\n  \"role\" text NOT NULL,\n  \"slug\" text NOT NULL,\n  \"sortOrder\" int4 DEFAULT 0 NOT NULL,\n  \"status\" text NOT NULL,\n  \"users\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Startup\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Startup\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.Talk",
+    "label": "Create table \"Talk\"",
+    "summary": "Creates table \"Talk\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "table",
+        "name": "Talk"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"Talk\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Talk\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"Talk\"",
+        "sql": "CREATE TABLE \"public\".\"Talk\" (\n  \"dateLabel\" text NOT NULL,\n  \"href\" text,\n  \"id\" text NOT NULL,\n  \"photoAlt\" text,\n  \"photoId\" text,\n  \"place\" text NOT NULL,\n  \"sortOrder\" int4 DEFAULT 0 NOT NULL,\n  \"text\" text,\n  \"title\" text NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"Talk\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Talk\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.AdminUser.AdminUser_email_key",
+    "label": "Add unique constraint on \"AdminUser\" (email)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "AdminUser_email_key",
+        "table": "AdminUser"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"AdminUser_email_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "AdminUser_email_key",
+          "public",
+          "\"public\".\"AdminUser\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"AdminUser_email_key\"",
+        "sql": "ALTER TABLE \"public\".\"AdminUser\" ADD CONSTRAINT \"AdminUser_email_key\" UNIQUE (\"email\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"AdminUser_email_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "AdminUser_email_key",
+          "public",
+          "\"public\".\"AdminUser\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Essay.Essay_slug_key",
+    "label": "Add unique constraint on \"Essay\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Essay_slug_key",
+        "table": "Essay"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Essay_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Essay_slug_key",
+          "public",
+          "\"public\".\"Essay\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Essay_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"Essay\" ADD CONSTRAINT \"Essay_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Essay_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Essay_slug_key",
+          "public",
+          "\"public\".\"Essay\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Session.Session_tokenHash_key",
+    "label": "Add unique constraint on \"Session\" (tokenHash)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Session_tokenHash_key",
+        "table": "Session"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Session_tokenHash_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Session_tokenHash_key",
+          "public",
+          "\"public\".\"Session\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Session_tokenHash_key\"",
+        "sql": "ALTER TABLE \"public\".\"Session\" ADD CONSTRAINT \"Session_tokenHash_key\" UNIQUE (\"tokenHash\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Session_tokenHash_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Session_tokenHash_key",
+          "public",
+          "\"public\".\"Session\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "unique.Startup.Startup_slug_key",
+    "label": "Add unique constraint on \"Startup\" (slug)",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "unique",
+        "name": "Startup_slug_key",
+        "table": "Startup"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure constraint \"Startup_slug_key\" does not exist",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Startup_slug_key",
+          "public",
+          "\"public\".\"Startup\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add unique constraint \"Startup_slug_key\"",
+        "sql": "ALTER TABLE \"public\".\"Startup\" ADD CONSTRAINT \"Startup_slug_key\" UNIQUE (\"slug\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify constraint \"Startup_slug_key\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"pg_constraint\" AS \"c\" INNER JOIN \"pg_namespace\" AS \"n\" ON \"n\".\"oid\" = \"c\".\"connamespace\" WHERE (\"c\".\"conname\" = $1 AND \"n\".\"nspname\" = $2 AND \"c\".\"conrelid\" = to_regclass($3))) AS \"result\"",
+        "params": [
+          "Startup_slug_key",
+          "public",
+          "\"public\".\"Startup\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Experience.Experience_kind_idx_c9ca668f",
+    "label": "Create index \"Experience_kind_idx_c9ca668f\" on \"Experience\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Experience_kind_idx_c9ca668f",
+        "table": "Experience"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Experience_kind_idx_c9ca668f\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Experience_kind_idx_c9ca668f\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Experience_kind_idx_c9ca668f\"",
+        "sql": "CREATE INDEX \"Experience_kind_idx_c9ca668f\" ON \"public\".\"Experience\" (\"kind\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Experience_kind_idx_c9ca668f\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Experience_kind_idx_c9ca668f\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Polaroid.Polaroid_ownerSlug_idx_07fb55c9",
+    "label": "Create index \"Polaroid_ownerSlug_idx_07fb55c9\" on \"Polaroid\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Polaroid_ownerSlug_idx_07fb55c9",
+        "table": "Polaroid"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Polaroid_ownerSlug_idx_07fb55c9\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Polaroid_ownerSlug_idx_07fb55c9\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Polaroid_ownerSlug_idx_07fb55c9\"",
+        "sql": "CREATE INDEX \"Polaroid_ownerSlug_idx_07fb55c9\" ON \"public\".\"Polaroid\" (\"ownerSlug\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Polaroid_ownerSlug_idx_07fb55c9\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Polaroid_ownerSlug_idx_07fb55c9\""
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.Session.Session_userId_idx_a489d58a",
+    "label": "Create index \"Session_userId_idx_a489d58a\" on \"Session\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "index",
+        "name": "Session_userId_idx_a489d58a",
+        "table": "Session"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"Session_userId_idx_a489d58a\" does not exist",
+        "sql": "SELECT (to_regclass($1)) IS NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Session_userId_idx_a489d58a\""
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"Session_userId_idx_a489d58a\"",
+        "sql": "CREATE INDEX \"Session_userId_idx_a489d58a\" ON \"public\".\"Session\" (\"userId\")",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"Session_userId_idx_a489d58a\" exists",
+        "sql": "SELECT (to_regclass($1)) IS NOT NULL AS \"result\"",
+        "params": [
+          "\"public\".\"Session_userId_idx_a489d58a\""
+        ]
+      }
+    ]
+  }
+]

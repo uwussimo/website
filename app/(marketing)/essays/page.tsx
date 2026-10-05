@@ -1,8 +1,8 @@
-import { getAllPosts } from "@/lib/blog";
+import { getEssays } from "@/lib/content";
 import { PostCard } from "../_components/post-card";
 
-export default function Essays() {
-  const posts = getAllPosts();
+export default async function Essays() {
+  const posts = await getEssays();
 
   return (
     <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[760px] px-6 pt-12 sm:px-8 sm:pt-16">

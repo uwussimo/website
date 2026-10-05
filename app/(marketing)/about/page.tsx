@@ -1,7 +1,11 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
-import { Artifact } from "@/components/artifact";
+import { FramedPhoto } from "@/components/framed-photo";
 import { Reveal } from "@/components/reveal";
+import { getInstagramPosts, getPlaces } from "@/lib/content";
+import { mediaUrl } from "@/lib/media-url";
+import { InstagramGrid } from "../_components/instagram-grid";
 
 export const metadata: Metadata = {
   title: "About me | Mukhammadyusuf Abdurakhimov",
@@ -9,25 +13,44 @@ export const metadata: Metadata = {
     "Product-oriented software engineer. I write about product development, startups, and building things people love.",
 };
 
-export default function About() {
+const INSTAGRAM_URL = "https://www.instagram.com/usufdev/";
+const TILTS = [-2, 1, -1, 2, -1, 1];
+
+export default async function About() {
+  const [places, instagramPosts] = await Promise.all([
+    getPlaces(),
+    getInstagramPosts(),
+  ]);
+  const photographed = places.filter((place) => place.photoId);
+
   return (
     <main className="mx-auto min-h-[calc(100vh-10rem)] max-w-[760px] px-6 pt-12 sm:px-8 sm:pt-16">
-      <section className="mb-12">
-        <p className="meta mb-3">about me</p>
-        <h1 className="heading-serif mb-8">
-          i write about <em>product development & startups.</em>
-        </h1>
-        <div className="flex flex-wrap gap-6 text-[18px] font-bold">
-          <Link href="/work" className="link-dashed">
-            where i&apos;ve worked
-          </Link>
-          <Link href="/essays" className="link-dashed">
-            read essays
-          </Link>
-          <Link href="/talks" className="link-dashed">
-            my talks
-          </Link>
+      <section className="mb-12 grid items-center gap-10 sm:grid-cols-[1fr_200px]">
+        <div>
+          <p className="meta mb-3">about me</p>
+          <h1 className="heading-serif mb-8">
+            i write about <em>product development & startups.</em>
+          </h1>
+          <div className="flex flex-wrap gap-6 text-[18px] font-bold">
+            <Link href="/work" className="link-dashed">
+              where i&apos;ve worked
+            </Link>
+            <Link href="/essays" className="link-dashed">
+              read essays
+            </Link>
+            <Link href="/talks" className="link-dashed">
+              my talks
+            </Link>
+          </div>
         </div>
+        <FramedPhoto
+          src="/instagram/portrait-bukhara.webp"
+          alt="Portrait of Yusuf at night in Bukhara's old town"
+          focus="50% 30%"
+          sizes="200px"
+          priority
+          className="animate-rise w-[170px] rotate-2 sm:w-full"
+        />
       </section>
 
       <article>
@@ -54,9 +77,25 @@ export default function About() {
         </p>
       </article>
 
-      <Reveal variant="grow" className="mx-auto mt-20 w-[280px] sm:w-[420px]">
-        <Artifact name="lion" sizes="(min-width: 640px) 420px, 280px" />
-      </Reveal>
+      <section className="mt-24">
+        <Reveal>
+          <h2 className="heading-serif">
+            life is <em>good.</em>
+          </h2>
+          <p className="lead mb-8 mt-5">
+            a few moments from{" "}
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-dashed font-bold"
+            >
+              @usufdev on instagram
+            </a>
+          </p>
+        </Reveal>
+        <InstagramGrid posts={instagramPosts} />
+      </section>
 
       <section className="mt-24">
         <h2 className="heading-serif mb-6">
@@ -75,30 +114,40 @@ export default function About() {
       <section className="mt-20 overflow-hidden pb-4" data-marquee>
         <div className="flex animate-marquee gap-4">
           {[...Array(2)].map((_, set) => (
-            <div key={set} className="flex shrink-0 gap-4 p-6">
-              {[
-                "Istanbul",
-                "Tashkent",
-                "San Francisco",
-                "Seattle",
-                "Omaha",
-                "Los Angeles",
-              ].map((caption, i) => (
-                <div
-                  key={`${set}-${caption}`}
-                  className="group shrink-0"
-                  style={{
-                    transform: `rotate(${[-2, 1, -1, 2, -1, 1][i]}deg)`,
-                  }}
-                >
-                  <div className="w-36 border border-border bg-card p-2 pb-6 shadow-lg transition-all duration-200 group-hover:scale-110 group-hover:rotate-0 group-hover:shadow-xl sm:w-40">
-                    <div className="aspect-[4/5] bg-secondary" />
-                    <p className="meta mt-2 text-center text-[13px]">
-                      {caption}
-                    </p>
+            <div
+              key={set}
+              className="flex shrink-0 gap-4 p-6"
+              aria-hidden={set === 1}
+            >
+              {photographed.map(
+                ({ id, name, photoId, photoAlt, photoFocus }, i) => (
+                  <div
+                    key={`${set}-${id}`}
+                    className="group shrink-0"
+                    style={{
+                      transform: `rotate(${TILTS[i % TILTS.length]}deg)`,
+                    }}
+                  >
+                    <div className="w-36 border border-border bg-card p-2 pb-6 shadow-lg transition-all duration-200 group-hover:scale-110 group-hover:rotate-0 group-hover:shadow-xl sm:w-40">
+                      <div className="relative aspect-[4/5] bg-secondary">
+                        {photoId && (
+                          <Image
+                            src={mediaUrl(photoId)}
+                            alt={set === 0 ? (photoAlt ?? name) : ""}
+                            fill
+                            sizes="160px"
+                            className="object-cover"
+                            style={{ objectPosition: photoFocus ?? undefined }}
+                          />
+                        )}
+                      </div>
+                      <p className="meta mt-2 text-center text-[13px]">
+                        {name}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ),
+              )}
             </div>
           ))}
         </div>

@@ -1,14 +1,22 @@
-import { formatDuration, formatPeriod, type Experience } from "@/lib/career";
+import { formatDuration, formatPeriod } from "@/lib/career";
+import type { Experience, Photo } from "@/lib/content";
+import { Polaroids } from "@/components/polaroids";
 
-export function ExperienceItem({ experience }: { experience: Experience }) {
+export function ExperienceItem({
+  experience,
+  photos = [],
+}: {
+  experience: Experience;
+  photos?: Photo[];
+}) {
   const { company, link, role, note, location, summary, highlights } =
     experience;
   const duration = formatDuration(experience);
 
   return (
-    <article className="grid gap-x-8 gap-y-3 border-t border-foreground/20 py-8 lowercase sm:grid-cols-[150px_1fr]">
+    <article className="grid gap-x-8 gap-y-3 border-t border-foreground/20 py-8 lowercase sm:grid-cols-[170px_1fr]">
       <div className="flex flex-wrap items-baseline gap-x-3 sm:flex-col sm:gap-1">
-        <p className="font-serif text-[19px] italic text-foreground">
+        <p className="font-serif text-[18px] italic leading-snug text-foreground">
           {formatPeriod(experience)}
         </p>
         {duration && (
@@ -35,9 +43,11 @@ export function ExperienceItem({ experience }: { experience: Experience }) {
           )}
         </h3>
         <p className="meta mt-0.5">{role}</p>
-        <p className="mt-4 text-[17px] leading-[1.55] text-foreground">
-          {summary}
-        </p>
+        {summary && (
+          <p className="mt-4 text-[17px] leading-[1.55] text-foreground">
+            {summary}
+          </p>
+        )}
         {highlights.length > 0 && (
           <ul className="mt-4 space-y-2">
             {highlights.map((highlight) => (
@@ -53,6 +63,7 @@ export function ExperienceItem({ experience }: { experience: Experience }) {
             ))}
           </ul>
         )}
+        <Polaroids photos={photos} label={company} />
       </div>
     </article>
   );

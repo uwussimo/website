@@ -2,22 +2,22 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { startups, statusLabels, type StartupStatus } from "@/lib/career";
+import { statusLabels } from "@/lib/career";
+import type { Photo, Startup } from "@/lib/content";
 import { Reveal } from "@/components/reveal";
 import { StartupCard } from "./startup-card";
 
-const STATUS_FILTERS: ("all" | StartupStatus)[] = [
-  "all",
-  "active",
-  "stealth",
-  "discontinued",
-  "acquired",
-];
+const STATUS_FILTERS = ["all", "active", "stealth", "discontinued", "acquired"];
 
-export function StartupList() {
-  const [statusFilter, setStatusFilter] = useState<"all" | StartupStatus>(
-    "all",
-  );
+export function StartupList({
+  startups,
+  photos,
+}: {
+  startups: Startup[];
+  /** polaroids for each startup, keyed by its slug */
+  photos: Record<string, Photo[]>;
+}) {
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const filteredStartups =
     statusFilter === "all"
@@ -46,8 +46,8 @@ export function StartupList() {
 
       <div className="mt-8 space-y-6">
         {filteredStartups.map((startup) => (
-          <Reveal key={startup.name}>
-            <StartupCard startup={startup} />
+          <Reveal key={startup.id}>
+            <StartupCard startup={startup} photos={photos[startup.slug]} />
           </Reveal>
         ))}
       </div>

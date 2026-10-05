@@ -131,6 +131,10 @@
   animation: marquee var(--marquee-duration, 30s) linear infinite;
 }
 
+.globe-horizon {
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+}
+
 .marquee-fade {
   mask-image: linear-gradient(
     to right,
@@ -139,34 +143,6 @@
     black 92%,
     transparent
   );
-}
-
-@keyframes sway {
-  from {
-    transform: rotate(-2.2deg);
-  }
-  to {
-    transform: rotate(2.2deg);
-  }
-}
-
-/* hangs from its ring, like a pendulum */
-.animate-sway {
-  transform-origin: 50% 3%;
-  animation: sway 5s ease-in-out infinite alternate;
-}
-
-@keyframes float {
-  from {
-    transform: translateY(-6px);
-  }
-  to {
-    transform: translateY(8px);
-  }
-}
-
-.animate-float {
-  animation: float 5.5s ease-in-out infinite alternate;
 }
 
 @keyframes rise {
@@ -221,21 +197,6 @@
   transform: none;
 }
 
-/* the hero image drifts up and shrinks a little as the page scrolls */
-@supports (animation-timeline: scroll()) {
-  @keyframes hero-drift {
-    to {
-      transform: translateY(-70px) scale(0.94);
-    }
-  }
-
-  .hero-drift {
-    animation: hero-drift linear both;
-    animation-timeline: scroll(root);
-    animation-range: 0 800px;
-  }
-}
-
 @keyframes shimmer {
   to {
     background-position: 100% 0;
@@ -262,11 +223,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee,
-  .animate-sway,
-  .animate-float,
   .animate-rise,
   .page-enter,
-  .hero-drift,
   .wordmark,
   .grain {
     animation: none !important;

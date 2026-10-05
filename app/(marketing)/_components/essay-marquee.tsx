@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { PostMeta } from "@/lib/blog";
+import type { EssayMeta } from "@/lib/content";
 
 // [glow, glow, base] for each poster, cycled through
 const PALETTES = [
@@ -12,7 +12,7 @@ const PALETTES = [
   ["#cfe3d4", "#7d9794", "#2f4a4a"],
 ];
 
-export function EssayMarquee({ posts }: { posts: PostMeta[] }) {
+export function EssayMarquee({ posts }: { posts: EssayMeta[] }) {
   return (
     <div className="marquee-fade overflow-hidden py-6" data-marquee>
       <div
