@@ -204,6 +204,7 @@ export async function addPolaroids(
       ownerSlug,
       mediaId: await storeUpload(file),
       caption: captionFromFileName(file.name),
+      onHome: false,
       sortOrder,
     });
   }
@@ -221,6 +222,7 @@ export async function savePolaroid(
   const sortOrder = Number(formData.get("sortOrder"));
   await updatePolaroid(id, {
     caption: String(formData.get("caption") ?? "").trim(),
+    onHome: formData.get("onHome") === "on",
     sortOrder: Number.isNaN(sortOrder) ? 0 : sortOrder,
   });
   refreshSite();

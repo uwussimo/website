@@ -67,6 +67,7 @@ export type PolaroidRow = {
   ownerSlug: string;
   mediaId: string;
   caption: string;
+  onHome: boolean;
   sortOrder: number;
 };
 

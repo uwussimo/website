@@ -115,6 +115,7 @@ async function seedPolaroids() {
           .replace(/\.[^.]+$/, "")
           .replace(/^\d+[-_ ]*/, "")
           .replace(/[-_]+/g, " "),
+        onHome: false,
         sortOrder: i * 10,
       });
     }
@@ -185,6 +186,7 @@ async function seedInstagram() {
       place: p.place,
       dateLabel: p.date,
       focus: p.focus ?? null,
+      onHome: p.onHome ?? false,
       sortOrder: i * 10,
     });
   }

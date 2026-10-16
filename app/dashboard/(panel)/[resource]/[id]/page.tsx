@@ -32,7 +32,7 @@ export default async function EditRecord({
       >
         ← {resource.label}
       </Link>
-      <h1 className="heading-serif mb-8 mt-3">
+      <h1 className="h-section mb-8 mt-3">
         {record ? resource.title(record) : `new ${resource.singular}`}
       </h1>
 

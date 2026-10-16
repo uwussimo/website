@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'4c74c979e6b1d005623b9504b6f721d1695ba514f61b174ebb21e601eecc94e4'>;
+  StorageHashBase<'2f76ab18b018c6484fae5defaa5d94d139eca3ed6d8d4ae61a2156bc5026ce73'>;
 export type ExecutionHash =
   ExecutionHashBase<'4a396e50da47700d617a0ef6d49d00301e1e37841773c2796176db548de40fec'>;
 export type ProfileHash =
@@ -292,6 +292,7 @@ export type FieldOutputTypes = {
       readonly href: CodecTypes['pg/text@1']['output'];
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly mediaId: CodecTypes['pg/text@1']['output'];
+      readonly onHome: CodecTypes['pg/bool@1']['output'];
       readonly place: CodecTypes['pg/text@1']['output'];
       readonly sortOrder: CodecTypes['pg/int4@1']['output'];
     };
@@ -317,6 +318,7 @@ export type FieldOutputTypes = {
       readonly caption: CodecTypes['pg/text@1']['output'];
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly mediaId: CodecTypes['pg/text@1']['output'];
+      readonly onHome: CodecTypes['pg/bool@1']['output'];
       readonly ownerSlug: CodecTypes['pg/text@1']['output'];
       readonly sortOrder: CodecTypes['pg/int4@1']['output'];
     };
@@ -399,6 +401,7 @@ export type FieldInputTypes = {
       readonly href: CodecTypes['pg/text@1']['input'];
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly mediaId: CodecTypes['pg/text@1']['input'];
+      readonly onHome: CodecTypes['pg/bool@1']['input'];
       readonly place: CodecTypes['pg/text@1']['input'];
       readonly sortOrder: CodecTypes['pg/int4@1']['input'];
     };
@@ -424,6 +427,7 @@ export type FieldInputTypes = {
       readonly caption: CodecTypes['pg/text@1']['input'];
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly mediaId: CodecTypes['pg/text@1']['input'];
+      readonly onHome: CodecTypes['pg/bool@1']['input'];
       readonly ownerSlug: CodecTypes['pg/text@1']['input'];
       readonly sortOrder: CodecTypes['pg/int4@1']['input'];
     };
@@ -506,6 +510,7 @@ export type StorageColumnTypes = {
       readonly href: CodecTypes['pg/text@1']['output'];
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly mediaId: CodecTypes['pg/text@1']['output'];
+      readonly onHome: CodecTypes['pg/bool@1']['output'];
       readonly place: CodecTypes['pg/text@1']['output'];
       readonly sortOrder: CodecTypes['pg/int4@1']['output'];
     };
@@ -531,6 +536,7 @@ export type StorageColumnTypes = {
       readonly caption: CodecTypes['pg/text@1']['output'];
       readonly id: CodecTypes['pg/text@1']['output'];
       readonly mediaId: CodecTypes['pg/text@1']['output'];
+      readonly onHome: CodecTypes['pg/bool@1']['output'];
       readonly ownerSlug: CodecTypes['pg/text@1']['output'];
       readonly sortOrder: CodecTypes['pg/int4@1']['output'];
     };
@@ -613,6 +619,7 @@ export type StorageColumnInputTypes = {
       readonly href: CodecTypes['pg/text@1']['input'];
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly mediaId: CodecTypes['pg/text@1']['input'];
+      readonly onHome: CodecTypes['pg/bool@1']['input'];
       readonly place: CodecTypes['pg/text@1']['input'];
       readonly sortOrder: CodecTypes['pg/int4@1']['input'];
     };
@@ -638,6 +645,7 @@ export type StorageColumnInputTypes = {
       readonly caption: CodecTypes['pg/text@1']['input'];
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly mediaId: CodecTypes['pg/text@1']['input'];
+      readonly onHome: CodecTypes['pg/bool@1']['input'];
       readonly ownerSlug: CodecTypes['pg/text@1']['input'];
       readonly sortOrder: CodecTypes['pg/int4@1']['input'];
     };
@@ -723,6 +731,7 @@ export namespace Models {
     href: CodecTypes['pg/text@1']['output'];
     id: CodecTypes['pg/text@1']['output'];
     mediaId: CodecTypes['pg/text@1']['output'];
+    onHome: CodecTypes['pg/bool@1']['output'];
     place: CodecTypes['pg/text@1']['output'];
     sortOrder: CodecTypes['pg/int4@1']['output'];
     readonly [RelationKeys]?: never;
@@ -751,6 +760,7 @@ export namespace Models {
     caption: CodecTypes['pg/text@1']['output'];
     id: CodecTypes['pg/text@1']['output'];
     mediaId: CodecTypes['pg/text@1']['output'];
+    onHome: CodecTypes['pg/bool@1']['output'];
     ownerSlug: CodecTypes['pg/text@1']['output'];
     sortOrder: CodecTypes['pg/int4@1']['output'];
     readonly [RelationKeys]?: never;
@@ -1047,6 +1057,15 @@ type ContractBase = Omit<
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
                 };
+                readonly onHome: {
+                  readonly nativeType: 'bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/bool@1', false>;
+                  };
+                };
                 readonly place: {
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
@@ -1174,6 +1193,15 @@ type ContractBase = Omit<
                   readonly nativeType: 'text';
                   readonly codecId: 'pg/text@1';
                   readonly nullable: false;
+                };
+                readonly onHome: {
+                  readonly nativeType: 'bool';
+                  readonly codecId: 'pg/bool@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'pg/bool@1', false>;
+                  };
                 };
                 readonly ownerSlug: {
                   readonly nativeType: 'text';
@@ -1623,6 +1651,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly onHome: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
               readonly place: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -1644,6 +1676,7 @@ type ContractBase = Omit<
                 readonly href: { readonly column: 'href' };
                 readonly id: { readonly column: 'id' };
                 readonly mediaId: { readonly column: 'mediaId' };
+                readonly onHome: { readonly column: 'onHome' };
                 readonly place: { readonly column: 'place' };
                 readonly sortOrder: { readonly column: 'sortOrder' };
               };
@@ -1758,6 +1791,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
               };
+              readonly onHome: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/bool@1' };
+              };
               readonly ownerSlug: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
@@ -1775,6 +1812,7 @@ type ContractBase = Omit<
                 readonly caption: { readonly column: 'caption' };
                 readonly id: { readonly column: 'id' };
                 readonly mediaId: { readonly column: 'mediaId' };
+                readonly onHome: { readonly column: 'onHome' };
                 readonly ownerSlug: { readonly column: 'ownerSlug' };
                 readonly sortOrder: { readonly column: 'sortOrder' };
               };

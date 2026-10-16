@@ -414,6 +414,13 @@
                   "kind": "scalar"
                 }
               },
+              "onHome": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
               "place": {
                 "nullable": false,
                 "type": {
@@ -452,6 +459,9 @@
                 },
                 "mediaId": {
                   "column": "mediaId"
+                },
+                "onHome": {
+                  "column": "onHome"
                 },
                 "place": {
                   "column": "place"
@@ -649,6 +659,13 @@
                   "kind": "scalar"
                 }
               },
+              "onHome": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
               "ownerSlug": {
                 "nullable": false,
                 "type": {
@@ -675,6 +692,9 @@
                 },
                 "mediaId": {
                   "column": "mediaId"
+                },
+                "onHome": {
+                  "column": "onHome"
                 },
                 "ownerSlug": {
                   "column": "ownerSlug"
@@ -1257,6 +1277,15 @@
                   "nativeType": "text",
                   "nullable": false
                 },
+                "onHome": {
+                  "codecId": "pg/bool@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nativeType": "bool",
+                  "nullable": false
+                },
                 "place": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
@@ -1398,6 +1427,15 @@
                 "mediaId": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
+                  "nullable": false
+                },
+                "onHome": {
+                  "codecId": "pg/bool@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nativeType": "bool",
                   "nullable": false
                 },
                 "ownerSlug": {
@@ -1647,7 +1685,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "4c74c979e6b1d005623b9504b6f721d1695ba514f61b174ebb21e601eecc94e4"
+    "storageHash": "2f76ab18b018c6484fae5defaa5d94d139eca3ed6d8d4ae61a2156bc5026ce73"
   },
   "execution": {
     "executionHash": "4a396e50da47700d617a0ef6d49d00301e1e37841773c2796176db548de40fec",

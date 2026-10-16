@@ -18,7 +18,9 @@ export async function PolaroidManager({
 
   return (
     <section className="mt-14 border-t border-border pt-10">
-      <h2 className="font-serif text-[26px] leading-tight">polaroids</h2>
+      <h2 className="font-semibold tracking-[-0.03em] text-[26px] leading-tight">
+        polaroids
+      </h2>
       <p className={helpClass}>
         shown on the startups and work pages for anything with the slug “{slug}
         ”.
@@ -57,6 +59,15 @@ export async function PolaroidManager({
                   className={inputClass}
                 />
               </div>
+              <label className="flex items-center gap-2 pb-2.5 text-[13px]">
+                <input
+                  type="checkbox"
+                  name="onHome"
+                  defaultChecked={polaroid.onHome}
+                  className="size-4 accent-foreground"
+                />
+                home strip
+              </label>
               <button type="submit" className={quietButton}>
                 save
               </button>

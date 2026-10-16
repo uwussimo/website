@@ -7,10 +7,10 @@ export default async function Login() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-[380px] flex-col justify-center px-6">
-      <p className="font-serif text-[22px] leading-none">✦ usufdev</p>
-      <h1 className="heading-serif mb-8 mt-4">
-        <em>dashboard</em>
-      </h1>
+      <p className="font-semibold tracking-[-0.03em] text-[22px] leading-none">
+        ✦ usufdev
+      </p>
+      <h1 className="h-section mb-8 mt-4">dashboard</h1>
       <LoginForm />
     </main>
   );

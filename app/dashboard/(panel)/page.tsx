@@ -9,9 +9,7 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <h1 className="heading-serif">
-        what&apos;s <em>on the site</em>
-      </h1>
+      <h1 className="h-section">what&apos;s on the site</h1>
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {resources.map((resource, i) => (
           <Link
@@ -19,7 +17,9 @@ export default async function DashboardPage() {
             href={`/dashboard/${resource.key}`}
             className="card-soft pop block p-6"
           >
-            <p className="font-serif text-[40px] leading-none">{counts[i]}</p>
+            <p className="font-semibold tracking-[-0.03em] text-[40px] leading-none">
+              {counts[i]}
+            </p>
             <p className="mt-2 text-[15px] text-foreground/70">
               {resource.label}
             </p>

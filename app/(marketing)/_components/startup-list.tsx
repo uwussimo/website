@@ -3,57 +3,52 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { statusLabels } from "@/lib/career";
-import type { Photo, Startup } from "@/lib/content";
+import type { Startup } from "@/lib/content";
 import { Reveal } from "@/components/reveal";
 import { StartupCard } from "./startup-card";
 
-const STATUS_FILTERS = ["all", "active", "stealth", "discontinued", "acquired"];
+const FILTERS = ["all", "active", "stealth", "discontinued", "acquired"];
 
 export function StartupList({
   startups,
-  photos,
+  covers,
 }: {
   startups: Startup[];
-  /** polaroids for each startup, keyed by its slug */
-  photos: Record<string, Photo[]>;
+  /** cover image per slug */
+  covers: Record<string, string>;
 }) {
-  const [statusFilter, setStatusFilter] = useState("all");
-
-  const filteredStartups =
-    statusFilter === "all"
-      ? startups
-      : startups.filter((s) => s.status === statusFilter);
+  const [filter, setFilter] = useState("all");
+  const shown =
+    filter === "all" ? startups : startups.filter((s) => s.status === filter);
 
   return (
     <>
-      <div className="flex flex-wrap gap-1.5">
-        {STATUS_FILTERS.map((value) => (
+      <div className="flex flex-wrap justify-center gap-2">
+        {FILTERS.map((value) => (
           <button
             key={value}
-            onClick={() => setStatusFilter(value)}
-            aria-pressed={statusFilter === value}
+            onClick={() => setFilter(value)}
+            aria-pressed={filter === value}
             className={cn(
-              "rounded-full px-4 py-2 text-[15px] leading-none transition-colors",
-              statusFilter === value
-                ? "bg-primary font-bold text-primary-foreground"
-                : "text-foreground/70 hover:text-foreground",
+              "rounded-full px-4 py-2 text-[14px] font-medium leading-none tracking-[-0.02em] transition-colors",
+              filter === value
+                ? "bg-foreground text-background"
+                : "bg-surface-strong text-foreground hover:bg-[#e8e8e8]",
             )}
           >
-            {value === "all" ? "all" : statusLabels[value]}
+            {value === "all" ? "All" : statusLabels[value]}
           </button>
         ))}
       </div>
-
-      <div className="mt-8 space-y-6">
-        {filteredStartups.map((startup) => (
-          <Reveal key={startup.id}>
-            <StartupCard startup={startup} photos={photos[startup.slug]} />
+      <div className="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2">
+        {shown.map((startup, i) => (
+          <Reveal key={startup.id} delay={(i % 2) * 80}>
+            <StartupCard startup={startup} cover={covers[startup.slug]} />
           </Reveal>
         ))}
       </div>
-
-      {filteredStartups.length === 0 && (
-        <p className="meta py-12 text-center">no startups in this category</p>
+      {shown.length === 0 && (
+        <p className="meta py-12 text-center">no startups in this category.</p>
       )}
     </>
   );

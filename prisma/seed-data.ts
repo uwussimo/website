@@ -360,11 +360,6 @@ export const places: SeedPlace[] = [
   {
     name: "Tashkent",
     location: [41.2995, 69.2401],
-    photo: {
-      src: "/instagram/tashkent.webp",
-      alt: "Yusuf standing by a floor-to-ceiling window in Tashkent",
-      focus: "50% 35%",
-    },
   },
   {
     name: "Bukhara",
@@ -415,6 +410,7 @@ export const places: SeedPlace[] = [
 ];
 
 export const instagramPosts: {
+  onHome?: boolean;
   href: string;
   src: string;
   alt: string;
@@ -460,8 +456,8 @@ export const instagramPosts: {
   },
   {
     href: "https://www.instagram.com/p/DUL11bcDPBQ/",
-    src: "/instagram/post-sf.webp",
-    alt: "A close-up selfie of Yusuf in glasses",
+    src: "/instagram/san-francisco.webp",
+    alt: "Yusuf at night with the San Francisco skyline behind him",
     caption: "sf’2025",
     place: "san francisco",
     date: "jan 2026",

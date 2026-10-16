@@ -1,26 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useTheme } from "next-themes";
 import createGlobe from "cobe";
 
 const ACCENT: [number, number, number] = [0.89, 0.42, 0.18];
 
-const THEMES = {
-  light: {
-    dark: 0,
-    baseColor: [1, 1, 1] as [number, number, number],
-    glowColor: [0.97, 0.97, 0.97] as [number, number, number],
-    mapBrightness: 5,
-    mapBaseBrightness: 0.03,
-  },
-  dark: {
-    dark: 1,
-    baseColor: [0.32, 0.32, 0.32] as [number, number, number],
-    glowColor: [0.1, 0.1, 0.1] as [number, number, number],
-    mapBrightness: 5,
-    mapBaseBrightness: 0,
-  },
+const LOOK = {
+  dark: 0,
+  baseColor: [1, 1, 1] as [number, number, number],
+  glowColor: [0.98, 0.98, 0.98] as [number, number, number],
+  mapBrightness: 5,
+  mapBaseBrightness: 0.03,
 };
 
 const BASE_THETA = 0.3;
@@ -44,7 +34,6 @@ export function Globe({
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const phiRef = useRef(phiFor(locations[0]?.[1] ?? 0));
-  const { resolvedTheme } = useTheme();
 
   useEffect(() => {
     const host = hostRef.current;
@@ -62,7 +51,7 @@ export function Globe({
     let size = host.offsetWidth;
 
     const globe = createGlobe(canvas, {
-      ...THEMES[resolvedTheme === "dark" ? "dark" : "light"],
+      ...LOOK,
       devicePixelRatio: Math.min(window.devicePixelRatio, 2),
       width: size,
       height: size,
@@ -158,7 +147,7 @@ export function Globe({
       globe.destroy();
       host.replaceChildren();
     };
-  }, [resolvedTheme, locations]);
+  }, [locations]);
 
   return <div ref={hostRef} className={className} />;
 }

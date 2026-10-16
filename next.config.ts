@@ -7,7 +7,11 @@ const nextConfig: NextConfig = {
     serverActions: { bodySizeLimit: "12mb" },
   },
   async redirects() {
-    return [{ source: "/projects", destination: "/startups", permanent: true }];
+    return [
+      { source: "/projects", destination: "/startups", permanent: true },
+      { source: "/work", destination: "/about#experience", permanent: true },
+      { source: "/talks", destination: "/about#talks", permanent: true },
+    ];
   },
 };
 

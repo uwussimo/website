@@ -115,7 +115,6 @@ export const resources: Resource[] = [
         options: [
           { value: "work", label: "where i've worked" },
           { value: "education", label: "where i studied" },
-          { value: "early", label: "how it started" },
         ],
       },
       {
@@ -296,6 +295,11 @@ export const resources: Resource[] = [
         label: "photo focus",
         type: "text",
         help: "where to crop around, e.g. 50% 30%",
+      },
+      {
+        name: "onHome",
+        label: "show in the photo strip on the home page",
+        type: "checkbox",
       },
       sortOrder,
     ],

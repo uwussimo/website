@@ -1,0 +1,86 @@
+[
+  {
+    "id": "column.public.InstagramPost.onHome",
+    "label": "Add column \"onHome\" to \"InstagramPost\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "onHome",
+        "table": "InstagramPost"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"onHome\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "InstagramPost",
+          "onHome"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"onHome\"",
+        "sql": "ALTER TABLE \"public\".\"InstagramPost\" ADD COLUMN \"onHome\" bool DEFAULT false NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"onHome\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "InstagramPost",
+          "onHome"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.public.Polaroid.onHome",
+    "label": "Add column \"onHome\" to \"Polaroid\"",
+    "operationClass": "additive",
+    "target": {
+      "id": "postgres",
+      "details": {
+        "schema": "public",
+        "objectType": "column",
+        "name": "onHome",
+        "table": "Polaroid"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"onHome\" is missing",
+        "sql": "SELECT NOT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Polaroid",
+          "onHome"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"onHome\"",
+        "sql": "ALTER TABLE \"public\".\"Polaroid\" ADD COLUMN \"onHome\" bool DEFAULT false NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"onHome\" exists",
+        "sql": "SELECT EXISTS (SELECT 1 AS \"one\" FROM \"information_schema\".\"columns\" WHERE (\"table_schema\" = $1 AND \"table_name\" = $2 AND \"column_name\" = $3)) AS \"result\"",
+        "params": [
+          "public",
+          "Polaroid",
+          "onHome"
+        ]
+      }
+    ]
+  }
+]

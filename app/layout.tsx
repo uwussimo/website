@@ -1,17 +1,15 @@
-import type { Metadata } from "next";
-import { Geist_Mono, Manrope, Newsreader } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TopLoader } from "@/components/providers/top-loader";
-import { ThemeProvider } from "@/components/providers/theme";
 import { UmamiAnalytics } from "@/components/providers/umami";
 
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope" });
-
-const newsreader = Newsreader({
+// inter's optical-size axis gives the display cut at headline sizes
+const inter = Inter({
   subsets: ["latin"],
-  style: ["normal", "italic"],
-  variable: "--font-newsreader",
+  axes: ["opsz"],
+  variable: "--font-inter",
 });
 
 const geistMono = Geist_Mono({
@@ -20,16 +18,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "usufdev   building products that people love",
+  title: "usufdev — building products that people love",
   description:
     "Builder & engineer sharing lessons from startups I've founded & built. From Uzbekistan to United States.",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-    viewportFit: "contain",
-  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -40,19 +36,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("font-sans", manrope.variable, newsreader.variable)}
-      suppressHydrationWarning
+      className={cn("font-sans", inter.variable, geistMono.variable)}
     >
-      <body
-        className={`${geistMono.variable} antialiased`}
-        suppressHydrationWarning
-      >
+      <body className="antialiased">
         <noscript>
           <style>{"[data-reveal]{opacity:1;transform:none}"}</style>
         </noscript>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          {children}
-        </ThemeProvider>
+        {children}
         <TopLoader />
         <UmamiAnalytics />
       </body>

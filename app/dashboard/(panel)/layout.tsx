@@ -14,7 +14,10 @@ export default async function PanelLayout({
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-10 px-6 py-10 md:flex-row">
       <aside className="shrink-0 md:w-[200px]">
-        <Link href="/dashboard" className="font-serif text-[22px] leading-none">
+        <Link
+          href="/dashboard"
+          className="font-semibold tracking-[-0.03em] text-[22px] leading-none"
+        >
           ✦ dashboard
         </Link>
         <nav

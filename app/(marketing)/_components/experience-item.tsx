@@ -1,6 +1,5 @@
 import { formatDuration, formatPeriod } from "@/lib/career";
 import type { Experience, Photo } from "@/lib/content";
-import { Polaroids } from "@/components/polaroids";
 
 export function ExperienceItem({
   experience,
@@ -12,58 +11,62 @@ export function ExperienceItem({
   const { company, link, role, note, location, summary, highlights } =
     experience;
   const duration = formatDuration(experience);
+  const side = [duration, note, location].filter(Boolean).join(" · ");
 
   return (
-    <article className="grid gap-x-8 gap-y-3 border-t border-foreground/20 py-8 lowercase sm:grid-cols-[170px_1fr]">
-      <div className="flex flex-wrap items-baseline gap-x-3 sm:flex-col sm:gap-1">
-        <p className="font-serif text-[18px] italic leading-snug text-foreground">
-          {formatPeriod(experience)}
-        </p>
-        {duration && (
-          <p className="text-[14px] text-foreground/60">{duration}</p>
-        )}
-        {note && <p className="text-[14px] text-foreground/60">{note}</p>}
-        {location && (
-          <p className="text-[14px] text-foreground/60">{location}</p>
-        )}
+    <article className="grid gap-x-10 gap-y-3 border-t border-border py-8 sm:grid-cols-[200px_1fr]">
+      <div>
+        <p className="body-text font-medium">{formatPeriod(experience)}</p>
+        {side && <p className="meta">{side}</p>}
       </div>
       <div>
-        <h3 className="font-serif text-[26px] leading-tight text-foreground">
+        <h3 className="h-card">
           {link ? (
             <a
               href={link}
               target="_blank"
               rel="noopener noreferrer"
-              className="link-dashed"
+              className="link"
             >
               {company}
             </a>
           ) : (
             company
           )}
+          <span className="text-foreground/60"> – {role.toLowerCase()}</span>
         </h3>
-        <p className="meta mt-0.5">{role}</p>
         {summary && (
-          <p className="mt-4 text-[17px] leading-[1.55] text-foreground">
-            {summary}
-          </p>
+          <p className="body-text mt-3 text-foreground/80">{summary}</p>
         )}
         {highlights.length > 0 && (
-          <ul className="mt-4 space-y-2">
+          <ul className="mt-3 space-y-1.5">
             {highlights.map((highlight) => (
               <li
                 key={highlight}
-                className="flex gap-3 text-[16px] leading-[1.5] text-foreground/75"
+                className="body-text flex gap-3 text-foreground/80"
               >
-                <span aria-hidden className="select-none text-foreground/40">
-                  ✦
+                <span aria-hidden className="text-foreground/30">
+                  •
                 </span>
                 {highlight}
               </li>
             ))}
           </ul>
         )}
-        <Polaroids photos={photos} label={company} />
+        {photos.length > 0 && (
+          <div className="mt-5 flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none]">
+            {photos.map(({ src, caption }) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={src}
+                src={src}
+                alt={`${company}: ${caption}`}
+                loading="lazy"
+                className="h-28 w-auto shrink-0 rounded-xl object-cover"
+              />
+            ))}
+          </div>
+        )}
       </div>
     </article>
   );

@@ -75,11 +75,13 @@ model Experience {
 }
 
 model Polaroid {
-  id        String @id @default(uuid())
+  id        String  @id @default(uuid())
   ownerSlug String
   mediaId   String
   caption   String
-  sortOrder Int    @default(0)
+  // also shown in the photo strip on the home page
+  onHome    Boolean @default(false)
+  sortOrder Int     @default(0)
 
   @@index([ownerSlug])
 }
@@ -129,5 +131,7 @@ model InstagramPost {
   place     String
   dateLabel String
   focus     String?
+  // also shown in the photo strip on the home page
+  onHome    Boolean @default(false)
   sortOrder Int     @default(0)
 }

@@ -18,7 +18,7 @@ export default async function ResourceList({
   return (
     <>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <h1 className="heading-serif">{resource.label}</h1>
+        <h1 className="h-section">{resource.label}</h1>
         <Link href={`/dashboard/${resource.key}/new`} className={primaryButton}>
           new {resource.singular}
         </Link>
