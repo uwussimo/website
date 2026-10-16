@@ -36,6 +36,10 @@
       "model": "Session",
       "namespace": "public"
     },
+    "Setting": {
+      "model": "Setting",
+      "namespace": "public"
+    },
     "Startup": {
       "model": "Startup",
       "namespace": "public"
@@ -766,6 +770,37 @@
               },
               "namespaceId": "public",
               "table": "Session"
+            }
+          },
+          "Setting": {
+            "fields": {
+              "key": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "value": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/json@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {},
+            "storage": {
+              "fields": {
+                "key": {
+                  "column": "key"
+                },
+                "value": {
+                  "column": "value"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Setting"
             }
           },
           "Startup": {
@@ -1527,6 +1562,28 @@
                 }
               ]
             },
+            "Setting": {
+              "columns": {
+                "key": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "value": {
+                  "codecId": "pg/json@1",
+                  "nativeType": "json",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "key"
+                ]
+              },
+              "uniques": []
+            },
             "Startup": {
               "columns": {
                 "description": {
@@ -1685,7 +1742,7 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "2f76ab18b018c6484fae5defaa5d94d139eca3ed6d8d4ae61a2156bc5026ce73"
+    "storageHash": "a25b568d808cd4c803da014b0dc128756eb2604d9591f9ae501306789b7b1c3f"
   },
   "execution": {
     "executionHash": "4a396e50da47700d617a0ef6d49d00301e1e37841773c2796176db548de40fec",

@@ -16,20 +16,21 @@ export function LoginForm() {
     <form onSubmit={submitWithoutReset(action)} className="space-y-5">
       <div>
         <label htmlFor="email" className={labelClass}>
-          email
+          Email
         </label>
         <input
           id="email"
           name="email"
           type="email"
           autoComplete="username"
+          autoFocus
           required
           className={inputClass}
         />
       </div>
       <div>
         <label htmlFor="password" className={labelClass}>
-          password
+          Password
         </label>
         <input
           id="password"
@@ -37,16 +38,24 @@ export function LoginForm() {
           type="password"
           autoComplete="current-password"
           required
+          aria-invalid={state.error ? true : undefined}
           className={inputClass}
         />
+        {state.error && (
+          <p
+            role="alert"
+            className="mt-1.5 text-[13px] font-medium text-destructive"
+          >
+            {state.error}
+          </p>
+        )}
       </div>
-      {state.error && (
-        <p role="alert" className="text-[14px] text-destructive">
-          {state.error}
-        </p>
-      )}
-      <button type="submit" disabled={pending} className={primaryButton}>
-        {pending ? "signing in…" : "sign in"}
+      <button
+        type="submit"
+        disabled={pending}
+        className={`${primaryButton} w-full`}
+      >
+        {pending ? "Signing in…" : "Sign in"}
       </button>
     </form>
   );

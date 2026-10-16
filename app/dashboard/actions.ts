@@ -2,9 +2,16 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireAdmin, signIn, signOut } from "@/lib/auth";
+import { getAdmin, requireAdmin, signIn, signOut } from "@/lib/auth";
+import { getSettingsPage } from "@/lib/admin/settings-forms";
+import type { SettingGroup } from "@/lib/settings";
+import { getSettings } from "@/lib/content";
+import { hashPassword, verifyPassword } from "@/lib/password";
+import { db } from "@/prisma/db";
 import { getResource, type Field, type Resource } from "@/lib/admin/resources";
+import { slugify } from "@/lib/admin/slug";
 import {
+  changePassword,
   createPolaroid,
   createRecord,
   deleteMedia,
@@ -12,15 +19,27 @@ import {
   deleteRecord,
   getPolaroid,
   getRecord,
+  lastSortOrder,
   listPolaroids,
   movePolaroids,
+  reorderPolaroids,
+  reorderRecords,
+  saveSetting,
   slugInUse,
   storeUpload,
+  swapPolaroidWithNeighbour,
+  swapWithNeighbour,
   updatePolaroid,
   updateRecord,
 } from "@/lib/admin/store";
 
-export type FormState = { error: string | null };
+export type FormState = {
+  error: string | null;
+  /** the field the error is about, when there is one */
+  field?: string;
+  /** set after a successful save, so the form can say so */
+  savedAt?: number;
+};
 
 // every public page is rendered ahead of time; this throws them all away
 const refreshSite = () => revalidatePath("/", "layout");
@@ -32,6 +51,15 @@ const backTo = (returnTo: string): never =>
 
 const uploaded = (value: FormDataEntryValue | null): File | null =>
   value instanceof File && value.size > 0 ? value : null;
+
+class FieldError extends Error {
+  constructor(
+    public field: string,
+    message: string,
+  ) {
+    super(message);
+  }
+}
 
 export async function login(
   _previous: FormState,
@@ -50,10 +78,21 @@ export async function logout() {
   redirect("/dashboard/login");
 }
 
+const readTimeFor = (markdown: string) => {
+  const words = markdown.split(/\s+/).filter(Boolean).length;
+  return `${Math.max(1, Math.round(words / 200))} min`;
+};
+
 /** Reads one field out of a submitted form, or throws a message to show. */
-function readField(field: Field, formData: FormData): unknown {
+function readField(
+  field: Field,
+  formData: FormData,
+  all: Record<string, unknown>,
+  existing: Record<string, unknown> | null,
+): unknown {
   const raw = formData.get(field.name);
   const text = typeof raw === "string" ? raw.trim() : "";
+  const missing = () => new FieldError(field.name, `${field.label} is needed.`);
 
   switch (field.type) {
     case "checkbox":
@@ -64,18 +103,32 @@ function readField(field: Field, formData: FormData): unknown {
         .map((line) => line.trim())
         .filter(Boolean);
     case "number": {
-      if (text === "" && !field.required) return 0;
-      const number = Number(text);
-      if (text === "" || Number.isNaN(number)) {
-        throw new Error(`${field.label} needs a number`);
+      if (text === "") {
+        if (field.required) throw missing();
+        return 0;
+      }
+      const number = Number(text.replace(",", "."));
+      if (Number.isNaN(number)) {
+        throw new FieldError(field.name, `${field.label} must be a number.`);
       }
       return number;
     }
+    case "month":
+      if (formData.get(`${field.name}__present`) === "on") return "present";
+      return text || null;
+    case "slug": {
+      if (!text && existing?.[field.name]) return existing[field.name];
+      const source = field.from ? String(all[field.from] ?? "") : "";
+      const slug = slugify(text || source);
+      if (!slug && field.required) throw missing();
+      return slug || null;
+    }
+    case "url":
+      if (text && !/^https?:\/\//i.test(text)) return `https://${text}`;
+      return text || null;
     default:
-      if (text === "" && field.required) {
-        throw new Error(`${field.label} is required`);
-      }
-      return text === "" ? null : text;
+      if (text === "" && field.required) throw missing();
+      return text || null;
   }
 }
 
@@ -87,53 +140,85 @@ export async function saveRecord(
 ): Promise<FormState> {
   await requireAdmin();
   const resource = getResource(resourceKey);
-  if (!resource) return { error: "unknown section" };
+  if (!resource) return { error: "Unknown section." };
 
   const existing = id ? await getRecord(resource, id) : null;
-  if (id && !existing) return { error: "this record no longer exists" };
+  if (id && !existing) return { error: "This record no longer exists." };
 
   const data: Record<string, unknown> = {};
   const replacedMedia: string[] = [];
 
   try {
-    for (const field of resource.fields) {
-      if (field.type !== "image") {
-        data[field.name] = readField(field, formData);
+    // plain fields first, so slugs can be derived from them
+    const ordered = [...resource.fields].sort(
+      (a, b) => Number(a.type === "slug") - Number(b.type === "slug"),
+    );
+    for (const field of ordered) {
+      if (field.type === "image") {
+        const current = (existing?.[field.name] as string | null) ?? null;
+        const file = uploaded(formData.get(field.name));
+        if (file) {
+          data[field.name] = await storeUpload(file);
+          if (current) replacedMedia.push(current);
+        } else if (formData.get(`${field.name}__remove`) === "on") {
+          if (field.required)
+            throw new FieldError(field.name, `${field.label} is needed.`);
+          data[field.name] = null;
+          if (current) replacedMedia.push(current);
+        } else if (!current && field.required) {
+          throw new FieldError(
+            field.name,
+            `Add a ${field.label.toLowerCase()}.`,
+          );
+        }
         continue;
       }
-      const current = (existing?.[field.name] as string | null) ?? null;
-      const file = uploaded(formData.get(field.name));
-      if (file) {
-        data[field.name] = await storeUpload(file);
-        if (current) replacedMedia.push(current);
-      } else if (formData.get(`${field.name}__remove`) === "on") {
-        if (field.required) throw new Error(`${field.label} is required`);
-        data[field.name] = null;
-        if (current) replacedMedia.push(current);
-      } else if (!current && field.required) {
-        throw new Error(`${field.label} is required`);
-      }
+      data[field.name] = readField(field, formData, data, existing);
+    }
+
+    // the system fills in what it can work out itself
+    if (resource.model === "Essay" && !data.readTime) {
+      data.readTime = readTimeFor(String(data.content ?? ""));
+    }
+    if (!existing && resource.reorderable) {
+      data.sortOrder = (await lastSortOrder(resource)) + 10;
     }
 
     if (existing) {
       await updateRecord(resource, existing.id, data);
       await followSlugChange(resource, existing.slug, data.slug);
     } else {
-      await createRecord(resource, data);
+      const created = await createRecord(resource, data);
+      await Promise.all(replacedMedia.map(deleteMedia));
+      refreshSite();
+      redirect(`/dashboard/${resource.key}/${created.id}?created=1`);
     }
   } catch (error) {
+    if (isRedirect(error)) throw error;
     const message = error instanceof Error ? error.message : String(error);
+    if (/unique|duplicate/i.test(message)) {
+      return {
+        error: "That address is already used by another record.",
+        field: "slug",
+      };
+    }
     return {
-      error: /unique|duplicate/i.test(message)
-        ? "that slug is already taken"
-        : message,
+      error: message,
+      field: error instanceof FieldError ? error.field : undefined,
     };
   }
 
   await Promise.all(replacedMedia.map(deleteMedia));
   refreshSite();
-  redirect(`/dashboard/${resource.key}`);
+  return { error: null, savedAt: Date.now() };
 }
+
+// next signals a redirect by throwing; it must pass through untouched
+const isRedirect = (error: unknown) =>
+  typeof error === "object" &&
+  error !== null &&
+  "digest" in error &&
+  String((error as { digest: unknown }).digest).startsWith("NEXT_REDIRECT");
 
 // polaroids hang off a slug, so they follow it when it is renamed, unless
 // another startup or work entry still uses the old one
@@ -174,7 +259,21 @@ export async function removeRecord(resourceKey: string, id: string) {
   }
 
   refreshSite();
-  redirect(`/dashboard/${resource.key}`);
+  redirect(
+    `/dashboard/${resource.key}?deleted=${encodeURIComponent(resource.title(existing))}`,
+  );
+}
+
+export async function moveRecord(
+  resourceKey: string,
+  id: string,
+  direction: "up" | "down",
+) {
+  await requireAdmin();
+  const resource = getResource(resourceKey);
+  if (!resource?.reorderable) return;
+  await swapWithNeighbour(resource, id, direction);
+  refreshSite();
 }
 
 // "02-team-offsite.jpg" -> "team offsite"
@@ -210,7 +309,7 @@ export async function addPolaroids(
   }
 
   refreshSite();
-  backTo(returnTo);
+  backTo(`${returnTo}?photos=${files.length}`);
 }
 
 export async function savePolaroid(
@@ -219,12 +318,20 @@ export async function savePolaroid(
   formData: FormData,
 ) {
   await requireAdmin();
-  const sortOrder = Number(formData.get("sortOrder"));
   await updatePolaroid(id, {
     caption: String(formData.get("caption") ?? "").trim(),
-    onHome: formData.get("onHome") === "on",
-    sortOrder: Number.isNaN(sortOrder) ? 0 : sortOrder,
   });
+  refreshSite();
+  backTo(returnTo);
+}
+
+export async function movePolaroid(
+  id: string,
+  direction: "up" | "down",
+  returnTo: string,
+) {
+  await requireAdmin();
+  await swapPolaroidWithNeighbour(id, direction);
   refreshSite();
   backTo(returnTo);
 }
@@ -238,4 +345,102 @@ export async function removePolaroid(id: string, returnTo: string) {
   }
   refreshSite();
   backTo(returnTo);
+}
+
+// ---- site settings, ordering, uploads and the account
+
+export async function saveSettings(
+  group: SettingGroup,
+  _previous: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  await requireAdmin();
+  const page = getSettingsPage(group);
+  if (!page) return { error: "Unknown page." };
+  const current = (await getSettings())[group] as Record<string, unknown>;
+  const data: Record<string, unknown> = { ...current };
+  const replacedMedia: string[] = [];
+
+  try {
+    for (const field of page.fields) {
+      if (field.type === "image") {
+        const existing = (current[field.name] as string | null) ?? null;
+        const file = uploaded(formData.get(field.name));
+        if (file) {
+          data[field.name] = await storeUpload(file);
+          if (existing) replacedMedia.push(existing);
+        } else if (formData.get(`${field.name}__remove`) === "on") {
+          data[field.name] = null;
+          if (existing) replacedMedia.push(existing);
+        }
+        continue;
+      }
+      if (field.type === "stats" || field.type === "strip") {
+        data[field.name] = JSON.parse(String(formData.get(field.name) || "[]"));
+        continue;
+      }
+      data[field.name] = readField(field, formData, data, null);
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    return {
+      error: message,
+      field: error instanceof FieldError ? error.field : undefined,
+    };
+  }
+
+  await saveSetting(group, data);
+  await Promise.all(replacedMedia.map(deleteMedia));
+  refreshSite();
+  return { error: null, savedAt: Date.now() };
+}
+
+/** Drag-and-drop result: the rows in their new order. */
+export async function reorder(resourceKey: string, orderedIds: string[]) {
+  await requireAdmin();
+  const resource = getResource(resourceKey);
+  if (!resource?.reorderable) return;
+  await reorderRecords(resource, orderedIds);
+  refreshSite();
+}
+
+export async function reorderPhotos(orderedIds: string[]) {
+  await requireAdmin();
+  await reorderPolaroids(orderedIds);
+  refreshSite();
+}
+
+/** An image dropped into the essay editor; returns where it is served. */
+export async function uploadInlineImage(
+  formData: FormData,
+): Promise<{ url: string } | { error: string }> {
+  await requireAdmin();
+  const file = uploaded(formData.get("file"));
+  if (!file) return { error: "No image received." };
+  const id = await storeUpload(file);
+  return { url: `/media/${id}` };
+}
+
+export async function updatePassword(
+  _previous: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const admin = await getAdmin();
+  if (!admin) redirect("/dashboard/login");
+  const current = String(formData.get("current") ?? "");
+  const next = String(formData.get("next") ?? "");
+  const again = String(formData.get("again") ?? "");
+  if (next.length < 12) {
+    return { error: "Use at least 12 characters.", field: "next" };
+  }
+  if (next !== again) {
+    return { error: "The two new passwords don't match.", field: "again" };
+  }
+  const user = await db.orm.public.AdminUser.first({ id: admin.id });
+  if (!user || !verifyPassword(current, user.passwordHash)) {
+    return { error: "That isn't your current password.", field: "current" };
+  }
+  await changePassword(admin.id, hashPassword(next));
+  await signOut();
+  redirect("/dashboard/login?changed=1");
 }

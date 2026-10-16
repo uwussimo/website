@@ -11,7 +11,8 @@ import {
   TelegramIcon,
 } from "@hugeicons/core-free-icons";
 import { cn } from "@/lib/utils";
-import { CHAT_URL } from "@/lib/site";
+import { avatarSrc } from "@/lib/site";
+import type { Settings } from "@/lib/settings";
 
 const links = [
   { href: "/startups", label: "Startups" },
@@ -19,7 +20,7 @@ const links = [
   { href: "/essays", label: "Essays" },
 ];
 
-const Navbar = () => {
+const Navbar = ({ profile }: { profile: Settings["profile"] }) => {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -31,7 +32,7 @@ const Navbar = () => {
       >
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/avatar.webp"
+            src={avatarSrc(profile)}
             alt=""
             width={36}
             height={36}
@@ -40,10 +41,10 @@ const Navbar = () => {
           />
           <span className="leading-tight">
             <span className="block text-[16px] font-medium tracking-[-0.02em]">
-              Yusuf Abdurakhimov
+              {profile.name}
             </span>
             <span className="block text-[13px] tracking-[-0.01em] text-foreground/60">
-              Builder & engineer · Founder at Oqim
+              {profile.tagline}
             </span>
           </span>
         </Link>
@@ -65,7 +66,7 @@ const Navbar = () => {
             </Link>
           ))}
           <a
-            href={CHAT_URL}
+            href={profile.chatUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-secondary py-2.5"
@@ -105,7 +106,7 @@ const Navbar = () => {
             ))}
           </div>
           <a
-            href={CHAT_URL}
+            href={profile.chatUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-secondary mt-4 w-full"

@@ -34,7 +34,7 @@ import type {
 } from '@prisma/orm-postgres/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'2f76ab18b018c6484fae5defaa5d94d139eca3ed6d8d4ae61a2156bc5026ce73'>;
+  StorageHashBase<'a25b568d808cd4c803da014b0dc128756eb2604d9591f9ae501306789b7b1c3f'>;
 export type ExecutionHash =
   ExecutionHashBase<'4a396e50da47700d617a0ef6d49d00301e1e37841773c2796176db548de40fec'>;
 export type ProfileHash =
@@ -329,6 +329,10 @@ export type FieldOutputTypes = {
       readonly tokenHash: CodecTypes['pg/text@1']['output'];
       readonly userId: CodecTypes['pg/text@1']['output'];
     };
+    readonly Setting: {
+      readonly key: CodecTypes['pg/text@1']['output'];
+      readonly value: CodecTypes['pg/json@1']['output'];
+    };
     readonly Startup: {
       readonly description: CodecTypes['pg/text@1']['output'];
       readonly featured: CodecTypes['pg/bool@1']['output'];
@@ -437,6 +441,10 @@ export type FieldInputTypes = {
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly tokenHash: CodecTypes['pg/text@1']['input'];
       readonly userId: CodecTypes['pg/text@1']['input'];
+    };
+    readonly Setting: {
+      readonly key: CodecTypes['pg/text@1']['input'];
+      readonly value: CodecTypes['pg/json@1']['input'];
     };
     readonly Startup: {
       readonly description: CodecTypes['pg/text@1']['input'];
@@ -547,6 +555,10 @@ export type StorageColumnTypes = {
       readonly tokenHash: CodecTypes['pg/text@1']['output'];
       readonly userId: CodecTypes['pg/text@1']['output'];
     };
+    readonly Setting: {
+      readonly key: CodecTypes['pg/text@1']['output'];
+      readonly value: CodecTypes['pg/json@1']['output'];
+    };
     readonly Startup: {
       readonly description: CodecTypes['pg/text@1']['output'];
       readonly featured: CodecTypes['pg/bool@1']['output'];
@@ -655,6 +667,10 @@ export type StorageColumnInputTypes = {
       readonly id: CodecTypes['pg/text@1']['input'];
       readonly tokenHash: CodecTypes['pg/text@1']['input'];
       readonly userId: CodecTypes['pg/text@1']['input'];
+    };
+    readonly Setting: {
+      readonly key: CodecTypes['pg/text@1']['input'];
+      readonly value: CodecTypes['pg/json@1']['input'];
     };
     readonly Startup: {
       readonly description: CodecTypes['pg/text@1']['input'];
@@ -773,6 +789,11 @@ export namespace Models {
     userId: CodecTypes['pg/text@1']['output'];
     readonly [RelationKeys]?: never;
   };
+  export type public_Setting = {
+    key: CodecTypes['pg/text@1']['output'];
+    value: CodecTypes['pg/json@1']['output'];
+    readonly [RelationKeys]?: never;
+  };
   export type public_Startup = {
     description: CodecTypes['pg/text@1']['output'];
     featured: CodecTypes['pg/bool@1']['output'];
@@ -813,6 +834,7 @@ export declare const models: {
     Place: Models.public_Place;
     Polaroid: Models.public_Polaroid;
     Session: Models.public_Session;
+    Setting: Models.public_Setting;
     Startup: Models.public_Startup;
     Talk: Models.public_Talk;
   };
@@ -1271,6 +1293,24 @@ type ContractBase = Omit<
               ];
               foreignKeys: readonly [];
             };
+            readonly Setting: {
+              columns: {
+                readonly key: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'pg/text@1';
+                  readonly nullable: false;
+                };
+                readonly value: {
+                  readonly nativeType: 'json';
+                  readonly codecId: 'pg/json@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['key'] };
+              uniques: readonly [];
+              indexes: readonly [];
+              foreignKeys: readonly [];
+            };
             readonly Startup: {
               columns: {
                 readonly description: {
@@ -1434,6 +1474,7 @@ type ContractBase = Omit<
     readonly Place: { readonly namespace: 'public' & NamespaceId; readonly model: 'Place' };
     readonly Polaroid: { readonly namespace: 'public' & NamespaceId; readonly model: 'Polaroid' };
     readonly Session: { readonly namespace: 'public' & NamespaceId; readonly model: 'Session' };
+    readonly Setting: { readonly namespace: 'public' & NamespaceId; readonly model: 'Setting' };
     readonly Startup: { readonly namespace: 'public' & NamespaceId; readonly model: 'Startup' };
     readonly Talk: { readonly namespace: 'public' & NamespaceId; readonly model: 'Talk' };
   };
@@ -1857,6 +1898,27 @@ type ContractBase = Omit<
                 readonly id: { readonly column: 'id' };
                 readonly tokenHash: { readonly column: 'tokenHash' };
                 readonly userId: { readonly column: 'userId' };
+              };
+            };
+          };
+          readonly Setting: {
+            readonly fields: {
+              readonly key: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/text@1' };
+              };
+              readonly value: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'pg/json@1' };
+              };
+            };
+            readonly relations: Record<string, never>;
+            readonly storage: {
+              readonly table: 'Setting';
+              readonly namespaceId: 'public';
+              readonly fields: {
+                readonly key: { readonly column: 'key' };
+                readonly value: { readonly column: 'value' };
               };
             };
           };

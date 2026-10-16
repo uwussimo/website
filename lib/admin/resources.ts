@@ -6,19 +6,37 @@ export type Field = {
   label: string;
   type:
     | "text"
+    | "url"
+    | "number"
     | "textarea"
     | "markdown"
     | "lines"
-    | "number"
     | "checkbox"
-    | "select"
-    | "image";
+    | "segmented"
+    | "image"
+    | "focus"
+    | "date"
+    | "month"
+    | "slug"
+    | "stats"
+    | "strip";
   required?: boolean;
   options?: { value: string; label: string }[];
   help?: string;
+  placeholder?: string;
+  /** form section heading */
+  section: string;
+  /** collapsed under "more options" until opened */
+  advanced?: boolean;
+  /** slug: the field it is derived from; focus: the image it applies to */
+  from?: string;
+  /** month: lets an end date be "present" */
+  presentLabel?: string;
 };
 
 export type Row = Record<string, unknown> & { id: string };
+
+export type Chip = { label: string; tone: "live" | "quiet" | "warn" };
 
 export type Resource = {
   key: string;
@@ -28,280 +46,490 @@ export type Resource = {
   singular: string;
   title: (row: Row) => string;
   subtitle?: (row: Row) => string;
+  chip?: (row: Row) => Chip | null;
+  /** where this record shows on the public site */
+  siteHref: (row: Row) => string;
   orderBy: { field: string; direction: "asc" | "desc" };
+  /** rows can be dragged into order (ordered by sortOrder) */
+  reorderable?: boolean;
+  /** lists split into groups, each with its own order */
+  groupBy?: { field: string; groups: { value: string; label: string }[] };
   /** has a `slug` that polaroids attach to */
   polaroids?: boolean;
+  /** the field shown as a thumbnail in lists */
+  thumbnail?: string;
   fields: Field[];
 };
 
-const sortOrder: Field = {
-  name: "sortOrder",
-  label: "order",
-  type: "number",
-  help: "lower numbers come first",
-};
+const statusChip = (status: unknown): Chip =>
+  status === "active"
+    ? { label: "live", tone: "live" }
+    : status === "stealth"
+      ? { label: "stealth", tone: "warn" }
+      : { label: status === "acquired" ? "acquired" : "ended", tone: "quiet" };
 
 export const resources: Resource[] = [
   {
     key: "startups",
     model: "Startup",
-    label: "startups",
+    label: "Startups",
     singular: "startup",
     title: (row) => String(row.name),
-    subtitle: (row) => `${row.role} · ${row.status}`,
+    subtitle: (row) => `${row.role} · founded ${row.founded}`,
+    chip: (row) => statusChip(row.status),
+    siteHref: (row) => `/startups/${row.slug}`,
     orderBy: { field: "sortOrder", direction: "asc" },
+    reorderable: true,
     polaroids: true,
+    thumbnail: "logoId",
     fields: [
-      { name: "name", label: "name", type: "text", required: true },
       {
-        name: "slug",
-        label: "slug",
+        section: "Basics",
+        name: "name",
+        label: "Name",
         type: "text",
         required: true,
-        help: "short id, lowercase with dashes. polaroids attach to it, and a work entry with the same slug shares them",
+        placeholder: "oqim.app",
       },
-      { name: "role", label: "your role", type: "text", required: true },
       {
+        section: "Basics",
+        name: "role",
+        label: "Your role",
+        type: "text",
+        required: true,
+        placeholder: "Founder",
+      },
+      {
+        section: "Basics",
         name: "description",
-        label: "description",
+        label: "One-paragraph description",
         type: "textarea",
         required: true,
       },
-      { name: "users", label: "users", type: "text", required: true },
-      { name: "mrr", label: "mrr", type: "text", required: true },
-      { name: "founded", label: "founded", type: "text", required: true },
       {
+        section: "Basics",
         name: "status",
-        label: "status",
-        type: "select",
+        label: "Status",
+        type: "segmented",
         required: true,
         options: [
-          { value: "active", label: "live" },
-          { value: "stealth", label: "stealth" },
-          { value: "discontinued", label: "ended" },
-          { value: "acquired", label: "acquired" },
+          { value: "active", label: "Live" },
+          { value: "stealth", label: "Stealth" },
+          { value: "discontinued", label: "Ended" },
+          { value: "acquired", label: "Acquired" },
         ],
       },
-      { name: "link", label: "website", type: "text" },
       {
-        name: "logoId",
-        label: "logo",
-        type: "image",
-        help: "optional. without one, the website's favicon is used",
+        section: "Basics",
+        name: "link",
+        label: "Website",
+        type: "url",
+        placeholder: "https://",
       },
       {
+        section: "Basics",
+        name: "logoId",
+        label: "Logo",
+        type: "image",
+        help: "Square works best. Without one, the website's favicon is used.",
+      },
+      {
+        section: "Numbers",
+        name: "users",
+        label: "Users",
+        type: "text",
+        required: true,
+        placeholder: "13.7k+",
+      },
+      {
+        section: "Numbers",
+        name: "mrr",
+        label: "MRR",
+        type: "text",
+        required: true,
+        placeholder: "NDA",
+      },
+      {
+        section: "Numbers",
+        name: "founded",
+        label: "Founded",
+        type: "text",
+        required: true,
+        placeholder: "2024",
+      },
+      {
+        section: "Visibility",
         name: "featured",
-        label: "show on the home page",
+        label: "Show on the home page",
         type: "checkbox",
       },
-      sortOrder,
+      {
+        section: "More options",
+        name: "slug",
+        label: "Address",
+        type: "slug",
+        from: "name",
+        required: true,
+        advanced: true,
+        help: "Filled in from the name. Polaroids and the matching work entry attach to it.",
+      },
     ],
   },
   {
     key: "work",
     model: "Experience",
-    label: "work & education",
+    label: "Work & education",
     singular: "entry",
     title: (row) => String(row.company),
-    subtitle: (row) => `${row.kind} · ${row.role}`,
+    subtitle: (row) => String(row.role),
+    groupBy: {
+      field: "kind",
+      groups: [
+        { value: "work", label: "Work" },
+        { value: "education", label: "Education" },
+      ],
+    },
+    chip: (row) =>
+      row.kind === "education"
+        ? { label: "education", tone: "quiet" }
+        : row.endDate === "present"
+          ? { label: "current", tone: "live" }
+          : null,
+    siteHref: () => "/about#experience",
     orderBy: { field: "sortOrder", direction: "asc" },
+    reorderable: true,
     polaroids: true,
     fields: [
       {
+        section: "Basics",
         name: "kind",
-        label: "section",
-        type: "select",
+        label: "Section",
+        type: "segmented",
         required: true,
         options: [
-          { value: "work", label: "where i've worked" },
-          { value: "education", label: "where i studied" },
+          { value: "work", label: "Work" },
+          { value: "education", label: "Education" },
         ],
       },
       {
+        section: "Basics",
         name: "company",
-        label: "company or school",
+        label: "Company or school",
         type: "text",
         required: true,
       },
       {
+        section: "Basics",
         name: "role",
-        label: "role or programme",
+        label: "Role or programme",
         type: "text",
         required: true,
       },
       {
-        name: "slug",
-        label: "slug",
-        type: "text",
-        help: "optional. needed for polaroids; use a startup's slug to share its photos",
-      },
-      { name: "link", label: "website", type: "text" },
-      {
-        name: "startDate",
-        label: "start",
-        type: "text",
-        help: "YYYY-MM or YYYY",
+        section: "Basics",
+        name: "link",
+        label: "Website",
+        type: "url",
+        placeholder: "https://",
       },
       {
+        section: "Basics",
+        name: "location",
+        label: "Location",
+        type: "text",
+        placeholder: "Tashkent",
+      },
+      { section: "Dates", name: "startDate", label: "Started", type: "month" },
+      {
+        section: "Dates",
         name: "endDate",
-        label: "end",
-        type: "text",
-        help: "YYYY-MM, YYYY, or the word present. leave empty if unknown",
+        label: "Ended",
+        type: "month",
+        presentLabel: "I'm still here",
       },
       {
-        name: "whenLabel",
-        label: "label instead of dates",
-        type: "text",
-        help: "shown only when there is no start date, e.g. age 17",
+        section: "What you did",
+        name: "summary",
+        label: "What it was",
+        type: "textarea",
       },
       {
-        name: "note",
-        label: "note",
-        type: "text",
-        help: "e.g. ended, acquired by 42.uz",
-      },
-      { name: "location", label: "location", type: "text" },
-      { name: "summary", label: "what it was", type: "textarea" },
-      {
+        section: "What you did",
         name: "highlights",
-        label: "what you did",
+        label: "Highlights",
         type: "lines",
-        help: "one per line",
+        help: "One per line.",
       },
-      sortOrder,
+      {
+        section: "More options",
+        name: "note",
+        label: "Note",
+        type: "text",
+        advanced: true,
+        placeholder: "acquired by 42.uz",
+      },
+      {
+        section: "More options",
+        name: "whenLabel",
+        label: "Label instead of dates",
+        type: "text",
+        advanced: true,
+        help: "Shown only when there is no start date, e.g. age 17.",
+      },
+      {
+        section: "More options",
+        name: "slug",
+        label: "Share photos with a startup",
+        type: "slug",
+        advanced: true,
+        help: "Use a startup's address (e.g. optochka) and this entry shows its polaroids.",
+      },
     ],
   },
   {
     key: "essays",
     model: "Essay",
-    label: "essays",
+    label: "Essays",
     singular: "essay",
     title: (row) => String(row.title),
-    subtitle: (row) => `${row.date}${row.published ? "" : " · draft"}`,
+    subtitle: (row) => `${row.date} · ${row.readTime}`,
+    chip: (row) => (row.published ? null : { label: "draft", tone: "warn" }),
+    siteHref: (row) => `/essays/${row.slug}`,
     orderBy: { field: "date", direction: "desc" },
     fields: [
-      { name: "title", label: "title", type: "text", required: true },
       {
-        name: "slug",
-        label: "slug",
+        section: "Basics",
+        name: "title",
+        label: "Title",
         type: "text",
         required: true,
-        help: "the address: /essays/<slug>",
       },
       {
+        section: "Basics",
         name: "date",
-        label: "date",
-        type: "text",
+        label: "Date",
+        type: "date",
         required: true,
-        help: "YYYY-MM-DD",
       },
       {
-        name: "readTime",
-        label: "read time",
-        type: "text",
-        required: true,
-        help: "e.g. 4 min",
+        section: "Basics",
+        name: "description",
+        label: "Short description",
+        type: "textarea",
+        help: "Shown in lists and search results.",
       },
-      { name: "description", label: "description", type: "textarea" },
       {
+        section: "Content",
         name: "content",
-        label: "content",
+        label: "Essay",
         type: "markdown",
         required: true,
-        help: "markdown",
       },
-      { name: "published", label: "published", type: "checkbox" },
+      {
+        section: "Visibility",
+        name: "published",
+        label: "Published",
+        type: "checkbox",
+        help: "Unpublished essays are only visible here.",
+      },
+      {
+        section: "More options",
+        name: "slug",
+        label: "Address",
+        type: "slug",
+        from: "title",
+        required: true,
+        advanced: true,
+        help: "Filled in from the title. Changing it breaks old links.",
+      },
+      {
+        section: "More options",
+        name: "readTime",
+        label: "Read time",
+        type: "text",
+        advanced: true,
+        help: "Worked out from the length when left empty.",
+      },
     ],
   },
   {
     key: "talks",
     model: "Talk",
-    label: "talks",
+    label: "Talks",
     singular: "talk",
     title: (row) => String(row.title),
     subtitle: (row) => `${row.place} · ${row.dateLabel}`,
+    siteHref: () => "/about#talks",
     orderBy: { field: "sortOrder", direction: "asc" },
+    reorderable: true,
+    thumbnail: "photoId",
     fields: [
-      { name: "title", label: "title", type: "text", required: true },
-      { name: "place", label: "where", type: "text", required: true },
       {
-        name: "dateLabel",
-        label: "when",
+        section: "Basics",
+        name: "title",
+        label: "Title",
         type: "text",
         required: true,
-        help: "e.g. june 2026",
       },
-      { name: "text", label: "description", type: "textarea" },
-      { name: "href", label: "link", type: "text" },
-      { name: "photoId", label: "photo", type: "image" },
-      { name: "photoAlt", label: "photo description", type: "text" },
-      sortOrder,
+      {
+        section: "Basics",
+        name: "place",
+        label: "Where",
+        type: "text",
+        required: true,
+        placeholder: "Tashkent",
+      },
+      {
+        section: "Basics",
+        name: "dateLabel",
+        label: "When",
+        type: "text",
+        required: true,
+        placeholder: "June 2026",
+      },
+      {
+        section: "Basics",
+        name: "text",
+        label: "Description",
+        type: "textarea",
+      },
+      {
+        section: "Basics",
+        name: "href",
+        label: "Link",
+        type: "url",
+        placeholder: "https://",
+      },
+      { section: "Photo", name: "photoId", label: "Photo", type: "image" },
+      {
+        section: "Photo",
+        name: "photoAlt",
+        label: "Photo description",
+        type: "text",
+        help: "For screen readers and search engines.",
+      },
     ],
   },
   {
     key: "places",
     model: "Place",
-    label: "places",
+    label: "Places",
     singular: "place",
     title: (row) => String(row.name),
     subtitle: (row) => `${row.latitude}, ${row.longitude}`,
+    siteHref: () => "/about",
     orderBy: { field: "sortOrder", direction: "asc" },
+    reorderable: true,
+    thumbnail: "photoId",
     fields: [
-      { name: "name", label: "name", type: "text", required: true },
-      { name: "latitude", label: "latitude", type: "number", required: true },
-      { name: "longitude", label: "longitude", type: "number", required: true },
       {
-        name: "photoId",
-        label: "photo",
-        type: "image",
-        help: "places with a photo also get a polaroid on the about page",
-      },
-      { name: "photoAlt", label: "photo description", type: "text" },
-      {
-        name: "photoFocus",
-        label: "photo focus",
+        section: "Basics",
+        name: "name",
+        label: "City",
         type: "text",
-        help: "where to crop around, e.g. 50% 30%",
+        required: true,
       },
       {
-        ...sortOrder,
-        help: "lower numbers come first. the globe starts at the first place",
+        section: "Basics",
+        name: "latitude",
+        label: "Latitude",
+        type: "number",
+        required: true,
+        placeholder: "41.2995",
+      },
+      {
+        section: "Basics",
+        name: "longitude",
+        label: "Longitude",
+        type: "number",
+        required: true,
+        placeholder: "69.2401",
+      },
+      {
+        section: "Photo",
+        name: "photoId",
+        label: "Photo",
+        type: "image",
+        help: "The first place with a photo is the city card on the about page.",
+      },
+      {
+        section: "Photo",
+        name: "photoFocus",
+        label: "Focus",
+        type: "focus",
+        from: "photoId",
+      },
+      {
+        section: "Photo",
+        name: "photoAlt",
+        label: "Photo description",
+        type: "text",
       },
     ],
   },
   {
     key: "instagram",
     model: "InstagramPost",
-    label: "instagram posts",
+    label: "Instagram",
     singular: "post",
     title: (row) => String(row.caption),
     subtitle: (row) => `${row.place} · ${row.dateLabel}`,
+    siteHref: () => "/about",
     orderBy: { field: "sortOrder", direction: "asc" },
+    reorderable: true,
+    thumbnail: "mediaId",
     fields: [
-      { name: "caption", label: "caption", type: "text", required: true },
-      { name: "href", label: "link to the post", type: "text", required: true },
-      { name: "mediaId", label: "photo", type: "image", required: true },
-      { name: "alt", label: "photo description", type: "text", required: true },
-      { name: "place", label: "place", type: "text", required: true },
       {
-        name: "dateLabel",
-        label: "date",
+        section: "Photo",
+        name: "mediaId",
+        label: "Photo",
+        type: "image",
+        required: true,
+      },
+      {
+        section: "Photo",
+        name: "focus",
+        label: "Focus",
+        type: "focus",
+        from: "mediaId",
+      },
+      {
+        section: "Photo",
+        name: "alt",
+        label: "Photo description",
         type: "text",
         required: true,
-        help: "e.g. jul 2026",
       },
       {
-        name: "focus",
-        label: "photo focus",
+        section: "Basics",
+        name: "caption",
+        label: "Caption",
         type: "text",
-        help: "where to crop around, e.g. 50% 30%",
+        required: true,
       },
       {
-        name: "onHome",
-        label: "show in the photo strip on the home page",
-        type: "checkbox",
+        section: "Basics",
+        name: "place",
+        label: "Place",
+        type: "text",
+        required: true,
       },
-      sortOrder,
+      {
+        section: "Basics",
+        name: "dateLabel",
+        label: "Date",
+        type: "text",
+        required: true,
+        placeholder: "jul 2026",
+      },
+      {
+        section: "Basics",
+        name: "href",
+        label: "Link to the post",
+        type: "url",
+        required: true,
+        placeholder: "https://www.instagram.com/p/…",
+      },
     ],
   },
 ];

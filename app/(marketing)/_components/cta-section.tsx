@@ -2,26 +2,29 @@ import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { TelegramIcon } from "@hugeicons/core-free-icons";
 import type { Experience } from "@/lib/content";
-import { CHAT_URL } from "@/lib/site";
+import type { Settings } from "@/lib/settings";
 import { Reveal } from "@/components/reveal";
 
 /** Closing pitch with a "now" list of whatever is still running. */
-export function CtaSection({ work }: { work: Experience[] }) {
+export function CtaSection({
+  work,
+  home,
+  chatUrl,
+}: {
+  work: Experience[];
+  home: Settings["home"];
+  chatUrl: string;
+}) {
   const now = work.filter((item) => item.endDate === "present");
 
   return (
     <section className="container-site mt-32 grid gap-10 lg:grid-cols-2 lg:gap-16">
       <Reveal>
-        <h2 className="h-section">
-          Have an idea in mind? Let&apos;s make it real.
-        </h2>
-        <p className="lede mt-6 max-w-[460px]">
-          Got an idea, a team that needs to ship, or just a question? I&apos;m
-          one message away.
-        </p>
+        <h2 className="h-section">{home.ctaTitle}</h2>
+        <p className="lede mt-6 max-w-[460px]">{home.ctaText}</p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <a
-            href={CHAT_URL}
+            href={chatUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary"

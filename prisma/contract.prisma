@@ -135,3 +135,10 @@ model InstagramPost {
   onHome    Boolean @default(false)
   sortOrder Int     @default(0)
 }
+
+// --- editable copy and curation for pages (hero text, strip, footer...)
+
+model Setting {
+  key   String @id
+  value Json
+}

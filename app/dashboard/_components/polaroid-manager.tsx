@@ -1,104 +1,118 @@
-import Image from "next/image";
-import { listPolaroids } from "@/lib/admin/store";
-import { mediaUrl } from "@/lib/media-url";
-import { addPolaroids, removePolaroid, savePolaroid } from "../actions";
-import { ImageInput } from "./image-input";
-import { helpClass, inputClass, labelClass, quietButton } from "./ui";
+"use client";
 
-/** The polaroids attached to a slug: reorder, recaption, remove, add. */
-export async function PolaroidManager({
+import Image from "next/image";
+import { useTransition } from "react";
+import { toast } from "sonner";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Delete02Icon } from "@hugeicons/core-free-icons";
+import type { PolaroidRow } from "@/lib/admin/store";
+import { mediaUrl } from "@/lib/media-url";
+import {
+  addPolaroids,
+  removePolaroid,
+  reorderPhotos,
+  savePolaroid,
+} from "../actions";
+import { ImageInput } from "./image-input";
+import { Sortable } from "./sortable";
+import { helpClass, iconButton, inputClass, quietButton } from "./ui";
+
+/**
+ * The photos attached to a slug: drag to reorder, captions save when you
+ * leave the field, × removes.
+ */
+export function PolaroidManager({
   slug,
+  photos,
   returnTo,
 }: {
   slug: string;
-  /** the page to come back to after each change */
+  photos: PolaroidRow[];
   returnTo: string;
 }) {
-  const polaroids = await listPolaroids(slug);
+  const [, start] = useTransition();
+  const saveCaption = (id: string, caption: string, previous: string) => {
+    if (caption.trim() === previous) return;
+    const data = new FormData();
+    data.set("caption", caption);
+    start(async () => {
+      await savePolaroid(id, returnTo, data);
+      toast.success("Caption saved.");
+    });
+  };
 
   return (
-    <section className="mt-14 border-t border-border pt-10">
-      <h2 className="font-semibold tracking-[-0.03em] text-[26px] leading-tight">
-        polaroids
-      </h2>
-      <p className={helpClass}>
-        shown on the startups and work pages for anything with the slug “{slug}
-        ”.
-      </p>
-
-      <div className="mt-6 space-y-4">
-        {polaroids.map((polaroid) => (
-          <div key={polaroid.id} className="flex items-end gap-4">
-            <div className="relative aspect-[4/5] w-20 shrink-0 overflow-hidden rounded-md border border-border bg-secondary">
-              <Image
-                src={mediaUrl(polaroid.mediaId)}
-                alt={polaroid.caption}
-                fill
-                sizes="80px"
-                className="object-cover"
+    <div className="space-y-5">
+      {photos.length > 0 ? (
+        <Sortable
+          items={photos}
+          layout="grid"
+          className="grid grid-cols-2 gap-3 sm:grid-cols-3"
+          onReorder={(ids) =>
+            start(async () => {
+              await reorderPhotos(ids);
+              toast.success("Order saved.");
+            })
+          }
+          render={(photo) => (
+            <div className="rounded-xl bg-surface p-2">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-lg bg-surface-strong">
+                <Image
+                  src={mediaUrl(photo.mediaId)}
+                  alt={photo.caption}
+                  fill
+                  sizes="240px"
+                  className="object-cover"
+                />
+                <button
+                  type="button"
+                  aria-label="Remove photo"
+                  onClick={() =>
+                    start(async () => {
+                      await removePolaroid(photo.id, returnTo);
+                      toast.success("Photo removed.");
+                    })
+                  }
+                  className={`${iconButton} absolute right-1.5 top-1.5 size-7 bg-background/90 backdrop-blur hover:text-destructive`}
+                >
+                  <HugeiconsIcon
+                    icon={Delete02Icon}
+                    className="size-3.5"
+                    strokeWidth={2}
+                  />
+                </button>
+              </div>
+              <input
+                defaultValue={photo.caption}
+                aria-label="Caption"
+                placeholder="Caption"
+                onBlur={(e) =>
+                  saveCaption(photo.id, e.target.value, photo.caption)
+                }
+                onKeyDown={(e) => e.key === "Enter" && e.currentTarget.blur()}
+                className={`${inputClass} mt-2 border-transparent bg-transparent px-2 py-1.5 text-[13px] hover:border-border`}
               />
             </div>
-            <form
-              action={savePolaroid.bind(null, polaroid.id, returnTo)}
-              className="flex flex-1 flex-wrap items-end gap-3"
-            >
-              <div className="min-w-[160px] flex-1">
-                <label className={labelClass}>caption</label>
-                <input
-                  name="caption"
-                  defaultValue={polaroid.caption}
-                  className={inputClass}
-                />
-              </div>
-              <div className="w-20">
-                <label className={labelClass}>order</label>
-                <input
-                  name="sortOrder"
-                  inputMode="numeric"
-                  defaultValue={polaroid.sortOrder}
-                  className={inputClass}
-                />
-              </div>
-              <label className="flex items-center gap-2 pb-2.5 text-[13px]">
-                <input
-                  type="checkbox"
-                  name="onHome"
-                  defaultChecked={polaroid.onHome}
-                  className="size-4 accent-foreground"
-                />
-                home strip
-              </label>
-              <button type="submit" className={quietButton}>
-                save
-              </button>
-            </form>
-            <form action={removePolaroid.bind(null, polaroid.id, returnTo)}>
-              <button type="submit" className={quietButton}>
-                remove
-              </button>
-            </form>
-          </div>
-        ))}
-        {polaroids.length === 0 && (
-          <p className="text-[14px] text-foreground/60">no polaroids yet.</p>
-        )}
-      </div>
+          )}
+        />
+      ) : (
+        <p className="text-[14px] text-foreground/55">No photos yet.</p>
+      )}
 
       <form
         action={addPolaroids.bind(null, slug, returnTo)}
-        className="mt-8 flex flex-wrap items-end gap-3"
+        className="space-y-3"
       >
-        <div className="min-w-[240px] flex-1">
-          <label className={labelClass}>add photos</label>
-          <ImageInput name="photos" multiple required />
+        <ImageInput name="photos" multiple required />
+        <div className="flex items-center justify-between gap-4">
+          <p className={helpClass}>
+            The file name becomes the caption; click a caption to change it.
+          </p>
+          <button type="submit" className={quietButton}>
+            Upload
+          </button>
         </div>
-        <button type="submit" className={quietButton}>
-          upload
-        </button>
       </form>
-      <p className={helpClass}>
-        the file name becomes the caption; you can edit it afterwards.
-      </p>
-    </section>
+    </div>
   );
 }

@@ -1,12 +1,16 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { requireAdmin } from "@/lib/auth";
 import { getResource } from "@/lib/admin/resources";
-import { getRecord } from "@/lib/admin/store";
+import { getRecord, listPolaroids } from "@/lib/admin/store";
 import { removeRecord, saveRecord } from "../../../actions";
+import { DangerZone } from "../../../_components/danger-zone";
+import { Notice } from "../../../_components/notice";
 import { PolaroidManager } from "../../../_components/polaroid-manager";
 import { RecordForm } from "../../../_components/record-form";
-import { quietButton } from "../../../_components/ui";
 
 export default async function EditRecord({
   params,
@@ -22,50 +26,57 @@ export default async function EditRecord({
   const record = isNew ? null : await getRecord(resource, id);
   if (!isNew && !record) notFound();
 
-  const slug = record && resource.polaroids ? record.slug : null;
+  const slug =
+    record && resource.polaroids && typeof record.slug === "string"
+      ? record.slug
+      : null;
+  const polaroids = slug ? await listPolaroids(slug) : [];
+  const here = `/dashboard/${resource.key}/${record?.id ?? "new"}`;
 
   return (
-    <div className="max-w-[640px]">
+    <div className="mx-auto max-w-[720px] pb-28">
+      <Suspense>
+        <Notice />
+      </Suspense>
       <Link
         href={`/dashboard/${resource.key}`}
-        className="meta hover:text-foreground"
+        className="inline-flex items-center gap-1 text-[13px] font-medium text-foreground/55 hover:text-foreground"
       >
-        ← {resource.label}
+        <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
+        {resource.label}
       </Link>
-      <h1 className="h-section mb-8 mt-3">
-        {record ? resource.title(record) : `new ${resource.singular}`}
+      <h1 className="mt-3 text-[28px] font-semibold tracking-[-0.03em]">
+        {record ? resource.title(record) : `New ${resource.singular}`}
       </h1>
 
       <RecordForm
         fields={resource.fields}
         record={record}
         action={saveRecord.bind(null, resource.key, record?.id ?? null)}
+        siteHref={record ? resource.siteHref(record) : null}
       />
 
-      {typeof slug === "string" && record && (
-        <PolaroidManager
-          slug={slug}
-          returnTo={`/dashboard/${resource.key}/${record.id}`}
-        />
+      {(slug || (resource.polaroids && !record)) && (
+        <section className="mt-6 rounded-2xl border border-border p-5 sm:p-6">
+          <h2 className="mb-5 text-[13px] font-semibold uppercase tracking-[0.08em] text-foreground/45">
+            Photos
+          </h2>
+          {slug ? (
+            <PolaroidManager slug={slug} photos={polaroids} returnTo={here} />
+          ) : (
+            <p className="text-[14px] text-foreground/55">
+              Save first, then you can add photos.
+            </p>
+          )}
+        </section>
       )}
 
       {record && (
-        <details className="mt-14 border-t border-border pt-8">
-          <summary className="cursor-pointer text-[14px] font-semibold text-foreground/60">
-            delete this {resource.singular}
-          </summary>
-          <form
-            action={removeRecord.bind(null, resource.key, record.id)}
-            className="mt-4"
-          >
-            <p className="mb-4 text-[14px] text-foreground/70">
-              this removes it from the site for good, along with its images.
-            </p>
-            <button type="submit" className={quietButton}>
-              yes, delete it
-            </button>
-          </form>
-        </details>
+        <DangerZone
+          name={resource.title(record)}
+          singular={resource.singular}
+          action={removeRecord.bind(null, resource.key, record.id)}
+        />
       )}
     </div>
   );

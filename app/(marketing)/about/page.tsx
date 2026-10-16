@@ -14,11 +14,13 @@ import {
   getInstagramPosts,
   getPlaces,
   getPolaroids,
+  getSettings,
   getStartups,
   getTalks,
 } from "@/lib/content";
 import { mediaUrl } from "@/lib/media-url";
-import { SOCIALS, yearsBuilding } from "@/lib/site";
+import { fillPlaceholders } from "@/lib/settings";
+import { avatarSrc, socialLinks, yearsBuilding } from "@/lib/site";
 import { Globe } from "@/components/globe";
 import { Photo } from "@/components/photo";
 import { Reveal } from "@/components/reveal";
@@ -39,29 +41,8 @@ const SOCIAL_ICONS = {
   LinkedIn: Linkedin01Icon,
 };
 
-// the stack from the github profile
-const STACK = [
-  "TypeScript",
-  "React",
-  "Next.js",
-  "React Native",
-  "Expo",
-  "Node.js",
-];
-
-// essays that double as working principles
-const PRINCIPLES = [
-  { text: "Ship it, then make it better", slug: "art-of-shipping" },
-  { text: "Say no now, not later", slug: "say-no-now-or-die-later" },
-  {
-    text: "Ask why people are frustrated",
-    slug: "stop-asking-what-people-want",
-  },
-  { text: "Answer fast, latency kills teams", slug: "latency-kills-teams" },
-];
-
 export default async function About() {
-  const [all, polaroids, talks, places, instagram, startups, essays] =
+  const [all, polaroids, talks, places, instagram, startups, essays, settings] =
     await Promise.all([
       getAllExperience(),
       getPolaroids(),
@@ -70,7 +51,19 @@ export default async function About() {
       getInstagramPosts(),
       getStartups(),
       getEssays(),
+      getSettings(),
     ]);
+  const { about, profile } = settings;
+  const fill = (text: string) =>
+    fillPlaceholders(text, {
+      startups: startups.length,
+      years: yearsBuilding(),
+    });
+  // "text | essay-address" lines become links to essays
+  const principles = about.principles.map((line) => {
+    const [text, slug] = line.split("|").map((part) => part.trim());
+    return { text, slug };
+  });
   const byKind = (kind: string) => all.filter((e) => e.kind === kind);
   const photographed = places.filter((p) => p.photoId);
   const cityPhoto = photographed[0];
@@ -80,16 +73,16 @@ export default async function About() {
       <SectionHeading
         as="h1"
         tag="About me"
-        title="The builder behind the products."
-        lede={`${yearsBuilding()} years of turning ideas into startups, from Tashkent to the Bay Area. Founder at Oqim, engineer at Dorim.`}
+        title={about.title}
+        lede={fill(about.lede)}
       />
 
       {/* bio + how i work */}
       <div className="mt-14 grid gap-4 lg:grid-cols-[1.6fr_1fr]">
         <Reveal className="card p-6 sm:p-10">
           <Photo
-            src="/avatar.webp"
-            alt="Portrait of Yusuf"
+            src={avatarSrc(profile)}
+            alt={`Portrait of ${profile.name}`}
             sizes="64px"
             className="size-16 rounded-xl"
           />
@@ -103,43 +96,36 @@ export default async function About() {
             <span className="tag bg-background">{essays.length} essays</span>
           </div>
           <p className="mt-6 text-[22px] font-medium leading-[1.3] tracking-[-0.03em] sm:text-[26px]">
-            I grew up around people who were curious about technology, and that
-            curiosity stuck. I started building things early: websites, small
-            apps, ideas that didn&apos;t always work. Some did.
+            {fill(about.bioLead)}
           </p>
-          <p className="lede mt-5">
-            After school I co-founded an edtech startup. We reached thousands of
-            students. We won something. More importantly, I learned what it
-            means to ship, to fail, and to try again. Since then I&apos;ve
-            worked at scale, built s-commerce platforms, and moved across
-            continents. I believe the best products come from teams who care
-            about their users.
-          </p>
+          <p className="lede mt-5 whitespace-pre-line">{fill(about.bio)}</p>
           <div className="mt-8 flex gap-3">
-            {SOCIALS.filter((s) => s.label in SOCIAL_ICONS).map((s) => (
-              <a
-                key={s.href}
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={s.label}
-                className="flex size-10 items-center justify-center rounded-full bg-background transition-colors hover:bg-surface-strong"
-              >
-                <HugeiconsIcon
-                  icon={SOCIAL_ICONS[s.label as keyof typeof SOCIAL_ICONS]}
-                  className="size-4"
-                  strokeWidth={1.5}
-                />
-              </a>
-            ))}
+            {socialLinks(profile)
+              .filter((s) => s.label in SOCIAL_ICONS)
+              .map((s) => (
+                <a
+                  key={s.href}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="flex size-10 items-center justify-center rounded-full bg-background transition-colors hover:bg-surface-strong"
+                >
+                  <HugeiconsIcon
+                    icon={SOCIAL_ICONS[s.label as keyof typeof SOCIAL_ICONS]}
+                    className="size-4"
+                    strokeWidth={1.5}
+                  />
+                </a>
+              ))}
           </div>
         </Reveal>
         <Reveal variant="right" className="card p-6 sm:p-8">
           <div className="space-y-2">
-            {PRINCIPLES.map(({ text, slug }) => (
+            {principles.map(({ text, slug }) => (
               <Link
-                key={slug}
-                href={`/essays/${slug}`}
+                key={text}
+                href={slug ? `/essays/${slug}` : "/essays"}
                 className="flex items-center justify-between gap-3 rounded-xl bg-background px-4 py-3 text-[15px] font-medium tracking-[-0.02em] transition-colors hover:bg-surface-strong"
               >
                 {text}
@@ -162,7 +148,7 @@ export default async function About() {
       <div className="mt-4 grid gap-4 md:grid-cols-3">
         <Reveal className="card p-6 sm:p-8">
           <div className="flex flex-wrap gap-2">
-            {STACK.map((tool) => (
+            {about.stack.map((tool) => (
               <span key={tool} className="tag bg-background">
                 {tool}
               </span>
@@ -200,10 +186,7 @@ export default async function About() {
 
       {/* experience */}
       <section id="experience" className="mt-32 scroll-mt-24">
-        <SectionHeading
-          tag="Where I've worked"
-          title="Every team, for how long, and what I did there."
-        />
+        <SectionHeading tag="Where I've worked" title={about.workTitle} />
         <div className="mx-auto mt-14 max-w-[840px] border-b border-border">
           {byKind("work").map((item) => (
             <Reveal key={item.id}>
@@ -217,7 +200,7 @@ export default async function About() {
       </section>
 
       <section className="mt-32">
-        <SectionHeading tag="Education" title="Where I studied." />
+        <SectionHeading tag="Education" title={about.educationTitle} />
         <div className="mx-auto mt-14 max-w-[840px] border-b border-border">
           {byKind("education").map((item) => (
             <Reveal key={item.id}>
@@ -229,7 +212,7 @@ export default async function About() {
 
       {/* talks */}
       <section id="talks" className="mt-32 scroll-mt-24">
-        <SectionHeading tag="Talks" title="Rooms I've spoken in." />
+        <SectionHeading tag="Talks" title={about.talksTitle} />
         <div className="mt-14 grid gap-4 sm:grid-cols-2">
           {talks.map((talk, i) => (
             <Reveal
@@ -275,12 +258,12 @@ export default async function About() {
       <section className="mt-32">
         <SectionHeading
           tag="Life is good"
-          title="A few moments from Instagram."
+          title={about.instagramTitle}
           lede={
             <>
               More on{" "}
               <a
-                href="https://www.instagram.com/usufdev/"
+                href={profile.instagram || "https://www.instagram.com/"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link font-medium text-foreground"
@@ -301,7 +284,7 @@ export default async function About() {
         <SectionHeading tag="Playlist" title="What I build to." />
         <Reveal className="mt-10">
           <iframe
-            src="https://open.spotify.com/embed/playlist/2HMFDNtUN8CzRy1vShvYDQ"
+            src={about.playlistUrl}
             width="100%"
             height="352"
             allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"

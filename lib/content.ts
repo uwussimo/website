@@ -3,6 +3,7 @@
 
 import { db } from "@/prisma/db";
 import { mediaUrl } from "./media-url";
+import { settingDefaults, type SettingGroup, type Settings } from "./settings";
 
 const orm = db.orm.public;
 
@@ -104,15 +105,26 @@ export async function getCovers(): Promise<Record<string, string>> {
   );
 }
 
-/** The curated photos in the home page strip, polaroids first. */
-export async function getHomePhotos(): Promise<Photo[]> {
+/** Every settings group, with the defaults filled in for anything unset. */
+export async function getSettings(): Promise<Settings> {
+  const rows = await orm.Setting.all();
+  const saved = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  const merged: Record<string, unknown> = {};
+  for (const group of Object.keys(settingDefaults) as SettingGroup[]) {
+    const stored = saved[group];
+    merged[group] = {
+      ...settingDefaults[group],
+      ...(stored && typeof stored === "object" ? stored : {}),
+    };
+  }
+  return merged as Settings;
+}
+
+/** Everything a photo picker can offer: every polaroid and instagram post. */
+export async function getAllPhotos(): Promise<Photo[]> {
   const [polaroids, posts] = await Promise.all([
-    orm.Polaroid.where({ onHome: true })
-      .orderBy((p) => p.sortOrder.asc())
-      .all(),
-    orm.InstagramPost.where({ onHome: true })
-      .orderBy((p) => p.sortOrder.asc())
-      .all(),
+    orm.Polaroid.orderBy((p) => p.sortOrder.asc()).all(),
+    orm.InstagramPost.orderBy((p) => p.sortOrder.asc()).all(),
   ]);
   return [...polaroids, ...posts].map(({ mediaId, caption }) => ({
     src: mediaUrl(mediaId),

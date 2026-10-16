@@ -1,13 +1,4 @@
-// links and facts used across the site
-export const CHAT_URL = "https://t.me/usufdev";
-
-export const SOCIALS = [
-  { label: "GitHub", href: "https://github.com/uwussimo" },
-  { label: "X (Twitter)", href: "https://twitter.com/uwussimo" },
-  { label: "Instagram", href: "https://www.instagram.com/usufdev/" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/mrabdurakhimov" },
-  { label: "Telegram", href: "https://t.me/TenxStartuper" },
-];
+import type { Settings } from "./settings";
 
 export const PAGES = [
   { label: "Home", href: "/" },
@@ -16,7 +7,25 @@ export const PAGES = [
   { label: "Essays", href: "/essays" },
 ];
 
+/** The social links that are filled in, in a fixed order. */
+export const socialLinks = (profile: Settings["profile"]) =>
+  (
+    [
+      ["GitHub", profile.github],
+      ["X (Twitter)", profile.x],
+      ["Instagram", profile.instagram],
+      ["LinkedIn", profile.linkedin],
+      ["Telegram", profile.telegram],
+    ] as const
+  )
+    .filter(([, href]) => href)
+    .map(([label, href]) => ({ label, href: href as string }));
+
 /** the year the first job on the work page started */
 export const FIRST_YEAR = 2020;
 
 export const yearsBuilding = () => new Date().getFullYear() - FIRST_YEAR;
+
+/** The avatar: the uploaded one, or the file shipped with the site. */
+export const avatarSrc = (profile: Settings["profile"]) =>
+  profile.avatarId ? `/media/${profile.avatarId}` : "/avatar.webp";
