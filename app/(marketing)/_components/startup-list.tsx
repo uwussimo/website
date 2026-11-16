@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { statusLabels } from "@/lib/career";
-import type { Startup } from "@/lib/content";
+import type { Photo, Startup } from "@/lib/content";
 import { Reveal } from "@/components/reveal";
 import { StartupCard } from "./startup-card";
 
@@ -11,11 +11,11 @@ const FILTERS = ["all", "active", "stealth", "discontinued", "acquired"];
 
 export function StartupList({
   startups,
-  covers,
+  photos,
 }: {
   startups: Startup[];
-  /** cover image per slug */
-  covers: Record<string, string>;
+  /** polaroids per slug */
+  photos: Record<string, Photo[]>;
 }) {
   const [filter, setFilter] = useState("all");
   const shown =
@@ -40,10 +40,10 @@ export function StartupList({
           </button>
         ))}
       </div>
-      <div className="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2">
+      <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2">
         {shown.map((startup, i) => (
           <Reveal key={startup.id} delay={(i % 2) * 80}>
-            <StartupCard startup={startup} cover={covers[startup.slug]} />
+            <StartupCard startup={startup} photos={photos[startup.slug]} />
           </Reveal>
         ))}
       </div>
