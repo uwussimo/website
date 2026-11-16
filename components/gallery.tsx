@@ -25,7 +25,7 @@ export function Gallery({
     >
       {photos.map(({ src, caption }) => (
         <figure key={src}>
-          <div className="img-card pop aspect-[4/5]">
+          <div className="img-card aspect-[4/5]">
             <Image
               src={src}
               alt={`${label}: ${caption}`}

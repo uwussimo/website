@@ -16,10 +16,9 @@ export default async function Startups() {
     <main className="container-site pt-16 sm:pt-24">
       <SectionHeading
         as="h1"
-        tag="Startups"
-        title="Launched fast, built to last."
+        title="startups"
         lede="Everything I've founded, built or advised, from a lyceum-era edtech to a creator ecosystem for Central Asia."
-        className="mb-12"
+        className="mb-8"
       />
       <StartupList startups={startups} photos={photos} />
     </main>

@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { statusLabels } from "@/lib/career";
+import { startupFacts, statusLabels } from "@/lib/career";
 import type { Photo, Startup } from "@/lib/content";
 import { mediaUrl } from "@/lib/media-url";
+import { StatusDot } from "@/components/status-dot";
 
 /** The startup's logo: an uploaded one, else its favicon, else a letter. */
 export function StartupLogo({
@@ -52,7 +53,7 @@ export function StartupLogo({
         />
       ) : (
         <span
-          className="font-semibold tracking-[-0.04em]"
+          className="font-medium tracking-[-0.04em]"
           style={{ fontSize: size * 0.42 }}
         >
           {name.charAt(0).toUpperCase()}
@@ -60,15 +61,6 @@ export function StartupLogo({
       )}
     </div>
   );
-}
-
-/**
- * "4,500+ creators" reads as a big number over a small noun, the way a store
- * listing shows "4.8" over "ratings". Anything else stays whole.
- */
-function splitUsers(users: string): [label: string, value: string] {
-  const match = users.trim().match(/^(\S*\d\S*)\s+(\D+)$/);
-  return match ? [match[2], match[1]] : ["users", users];
 }
 
 /** A startup as an app store listing: icon, name, facts, screenshots. */
@@ -80,45 +72,41 @@ export function StartupCard({
   /** its polaroids; the first three become the screenshots */
   photos?: Photo[];
 }) {
-  const { slug, name, role, description, status, founded, users, mrr } =
-    startup;
+  const { slug, name, role, description, status } = startup;
   const shots = photos.slice(0, 3);
-  const facts = [
-    splitUsers(users),
-    ["mrr", mrr],
-    ["founded", founded],
-    ["status", statusLabels[status] ?? status],
-  ];
+  const facts = startupFacts(startup);
 
   return (
     <Link
       href={`/startups/${slug}`}
-      className="card pop group flex h-full flex-col p-5 sm:p-6"
+      className="card flex h-full flex-col p-5 transition-colors duration-200 hover:bg-surface-strong sm:p-6"
     >
-      <div className="flex items-center gap-3 sm:gap-4">
+      <div className="flex items-center gap-4">
         <StartupLogo
           startup={startup}
           size={64}
           className="ring-1 ring-border"
         />
         <div className="min-w-0 flex-1">
-          <h3 className="h-card truncate font-semibold leading-[1.25]">
-            {name}
-          </h3>
+          <h3 className="h-card truncate leading-[1.25]">{name}</h3>
           <p className="meta truncate">{role.toLowerCase()}</p>
         </div>
-        <span className="shrink-0 rounded-full bg-surface-strong px-4 py-2 text-[15px] sm:px-5 font-semibold leading-none tracking-[-0.02em] transition-colors duration-200 group-hover:bg-foreground group-hover:text-background">
-          Open
+        <span className="flex shrink-0 items-center gap-2 text-[14px] font-medium">
+          <StatusDot status={status} />
+          {statusLabels[status] ?? status}
         </span>
       </div>
 
-      <dl className="mt-5 grid grid-cols-4 divide-x divide-border border-y border-border py-3 text-center">
+      <dl
+        className="mt-5 grid divide-x divide-border border-y border-border py-3 text-center"
+        style={{ gridTemplateColumns: `repeat(${facts.length}, 1fr)` }}
+      >
         {facts.map(([label, value]) => (
           <div key={label} className="flex min-w-0 flex-col-reverse px-2">
-            <dt className="truncate text-[12px] leading-[1.4] tracking-[-0.01em] text-foreground/50">
+            <dt className="truncate text-[12px] leading-[16px] text-foreground/60">
               {label.toLowerCase()}
             </dt>
-            <dd className="truncate text-[17px] font-semibold leading-[1.4] tracking-[-0.03em] text-foreground/80">
+            <dd className="truncate text-[18px] font-medium leading-[24px] tracking-[-0.02em] tabular-nums">
               {value.toLowerCase()}
             </dd>
           </div>
@@ -133,7 +121,7 @@ export function StartupCard({
           {shots.map(({ src, caption, mediaId }) => (
             <div
               key={mediaId}
-              className="relative overflow-hidden rounded-xl bg-surface-strong"
+              className="relative overflow-hidden rounded-lg bg-surface-strong"
             >
               <Image
                 src={src}
@@ -147,7 +135,7 @@ export function StartupCard({
         </div>
       )}
 
-      <p className="body-text mt-5 line-clamp-3 text-pretty text-foreground/70">
+      <p className="body-text mt-5 line-clamp-4 text-pretty sm:line-clamp-3 text-foreground/70">
         {description}
       </p>
     </Link>

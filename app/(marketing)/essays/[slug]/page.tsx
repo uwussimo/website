@@ -3,6 +3,7 @@ import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import type { Metadata } from "next";
+import { formatDay } from "@/lib/career";
 import { getEssay, getEssays } from "@/lib/content";
 import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -40,12 +41,12 @@ export default async function Essay({ params }: Props) {
           All essays
         </Link>
         <header className="mb-10">
-          <h1 className="h-section text-balance">{post.title}</h1>
-          <p className="meta mt-5">
-            {post.date} · {post.readTime} read
+          <h1 className="h-display text-balance">{post.title}</h1>
+          <p className="meta mt-5 tabular-nums">
+            {formatDay(post.date)} · {post.readTime} read
           </p>
         </header>
-        <div className="space-y-6 text-[18px] leading-[1.6] tracking-[-0.01em] text-foreground/85 [&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-foreground/70 [&_blockquote]:border-l-2 [&_blockquote]:border-foreground/20 [&_blockquote]:pl-5 [&_blockquote]:text-[20px] [&_blockquote]:font-medium [&_blockquote]:tracking-[-0.02em] [&_blockquote]:text-foreground [&_h2]:mt-12 [&_h2]:text-[28px] [&_h2]:font-semibold [&_h2]:leading-tight [&_h2]:tracking-[-0.03em] [&_h2]:text-foreground [&_h3]:mt-8 [&_h3]:text-[22px] [&_h3]:font-semibold [&_h3]:tracking-[-0.03em] [&_h3]:text-foreground [&_img]:my-6 [&_img]:max-w-full [&_img]:rounded-2xl [&_strong]:text-foreground [&_ul]:list-inside [&_ul]:list-disc [&_ul]:space-y-1">
+        <div className="space-y-6 text-[18px] leading-[1.6] tracking-[-0.01em] text-foreground/85 [&_a]:text-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-foreground/70 [&_blockquote]:border-l-2 [&_blockquote]:border-foreground/20 [&_blockquote]:pl-5 [&_blockquote]:text-[20px] [&_blockquote]:font-medium [&_blockquote]:tracking-[-0.02em] [&_blockquote]:text-foreground [&_h2]:mt-12 [&_h2]:text-[28px] [&_h2]:font-medium [&_h2]:leading-tight [&_h2]:tracking-[-0.03em] [&_h2]:text-foreground [&_h3]:mt-8 [&_h3]:text-[22px] [&_h3]:font-medium [&_h3]:tracking-[-0.03em] [&_h3]:text-foreground [&_img]:my-6 [&_img]:max-w-full [&_img]:rounded-2xl [&_strong]:text-foreground [&_ul]:list-inside [&_ul]:list-disc [&_ul]:space-y-1">
           <ReactMarkdown rehypePlugins={[rehypeRaw]}>
             {post.content}
           </ReactMarkdown>

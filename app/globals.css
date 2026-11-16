@@ -88,33 +88,6 @@
   --sidebar-ring: #b5b5b5;
 }
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.animate-marquee {
-  animation: marquee var(--marquee-duration, 30s) linear infinite;
-}
-
-[data-marquee]:hover .animate-marquee {
-  animation-play-state: paused;
-}
-
-.marquee-fade {
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    black 10%,
-    black 90%,
-    transparent
-  );
-}
-
 @keyframes rise {
   from {
     opacity: 0;
@@ -137,53 +110,10 @@
   animation: page-enter 0.4s ease-out both;
 }
 
-/* scroll reveals, switched on by components/reveal.tsx */
-[data-reveal] {
-  opacity: 0;
-  transition:
-    opacity 0.7s cubic-bezier(0.44, 0, 0.56, 1),
-    transform 0.7s cubic-bezier(0.44, 0, 0.56, 1);
-}
-
-[data-reveal="up"] {
-  transform: translateY(24px);
-}
-
-[data-reveal="left"] {
-  transform: translateX(-24px);
-}
-
-[data-reveal="right"] {
-  transform: translateX(24px);
-}
-
-[data-reveal="grow"] {
-  transform: scale(0.96);
-}
-
-[data-reveal][data-visible] {
-  opacity: 1;
-  transform: none;
-}
-
-@media print {
-  [data-reveal] {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .animate-marquee,
   .animate-rise,
   .page-enter {
     animation: none !important;
-  }
-
-  [data-reveal] {
-    opacity: 1;
-    transform: none;
-    transition: none;
   }
 }
 
@@ -207,62 +137,52 @@
     @apply mx-auto w-full max-w-[1040px] px-6;
   }
 
-  /* type scale: tight inter display sizes for headings, relaxed body */
+  /* type scale: size and colour carry the hierarchy, weight stays at 500.
+     tight tracking is for display sizes only */
   .h-display {
-    @apply text-[44px] font-semibold leading-[1] tracking-[-0.04em] text-foreground sm:text-[64px] lg:text-[80px];
+    @apply text-[40px] font-medium leading-[1.05] tracking-[-0.04em] text-foreground sm:text-[56px];
   }
 
   .h-section {
-    @apply text-[38px] font-semibold leading-[1] tracking-[-0.04em] text-foreground sm:text-[52px] lg:text-[64px];
+    @apply text-[28px] font-medium leading-[1.15] tracking-[-0.03em] text-foreground sm:text-[32px];
   }
 
   .h-card {
-    @apply text-[20px] font-medium leading-[1.4] tracking-[-0.03em] text-foreground;
+    @apply text-[20px] font-medium leading-[1.4] tracking-[-0.02em] text-foreground;
   }
 
   .lede {
-    @apply text-[17px] leading-[1.5] tracking-[-0.02em] text-foreground/70 sm:text-[18px];
+    @apply text-[18px] leading-[1.5] tracking-[-0.01em] text-foreground/70;
   }
 
   .body-text {
-    @apply text-[16px] leading-[1.45] tracking-[-0.02em] text-foreground;
+    @apply text-[16px] leading-[1.5] text-foreground;
   }
 
   .meta {
-    @apply text-[14px] leading-[1.5] tracking-[-0.02em] text-foreground/60;
+    @apply text-[14px] leading-[1.5] text-foreground/60;
   }
 
-  .tag {
-    @apply inline-flex items-center gap-2 rounded-full bg-surface-strong px-3.5 py-1.5 text-[14px] font-medium leading-[1.4] tracking-[-0.02em] text-foreground;
-  }
-
-  .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-3 text-[16px] font-medium leading-none tracking-[-0.03em] transition-[opacity,background-color,transform] duration-200 active:scale-[0.98];
-  }
-
+  /* pills are for things you press */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-5 py-3 text-[16px] font-medium leading-none tracking-[-0.03em] text-background transition-[opacity,transform] duration-200 hover:opacity-85 active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-5 py-3 text-[16px] font-medium leading-none tracking-[-0.01em] text-background transition-[opacity,transform] duration-200 hover:opacity-85 active:scale-[0.98];
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-surface-strong px-5 py-3 text-[16px] font-medium leading-none tracking-[-0.03em] text-foreground transition-[background-color,transform] duration-200 hover:bg-[#e8e8e8] active:scale-[0.98];
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-surface-strong px-5 py-3 text-[16px] font-medium leading-none tracking-[-0.01em] text-foreground transition-[background-color,transform] duration-200 hover:bg-[#e8e8e8] active:scale-[0.98];
   }
 
   .card {
     @apply rounded-2xl bg-surface;
   }
 
-  .card-soft {
-    @apply rounded-2xl bg-surface;
+  /* a label column beside its content, the way the work history reads */
+  .ledger-row {
+    @apply grid gap-x-10 gap-y-3 border-t border-border py-8 sm:grid-cols-[200px_1fr];
   }
 
   .link {
     @apply underline decoration-foreground/30 underline-offset-4 transition-colors hover:decoration-foreground;
-  }
-
-  /* cards and images lift a touch on hover */
-  .pop {
-    @apply transition-transform duration-300 ease-out hover:scale-[1.015];
   }
 
   .img-card {

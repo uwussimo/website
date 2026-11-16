@@ -27,7 +27,7 @@ const Navbar = ({ profile }: { profile: Settings["profile"] }) => {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
       <nav
-        className="container-site flex h-[70px] items-center justify-between"
+        className="container-site flex h-[72px] items-center justify-between"
         aria-label="Main"
       >
         <Link href="/" className="flex items-center gap-3">
@@ -43,7 +43,7 @@ const Navbar = ({ profile }: { profile: Settings["profile"] }) => {
             <span className="block text-[16px] font-medium tracking-[-0.02em]">
               {profile.name}
             </span>
-            <span className="block text-[13px] tracking-[-0.01em] text-foreground/60">
+            <span className="block text-[13px] text-foreground/60">
               {profile.tagline}
             </span>
           </span>
@@ -56,7 +56,7 @@ const Navbar = ({ profile }: { profile: Settings["profile"] }) => {
               href={href}
               aria-current={pathname.startsWith(href) ? "page" : undefined}
               className={cn(
-                "text-[16px] tracking-[-0.02em] transition-colors hover:text-foreground",
+                "text-[16px] transition-colors hover:text-foreground",
                 pathname.startsWith(href)
                   ? "font-medium text-foreground"
                   : "text-foreground/80",

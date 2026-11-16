@@ -19,30 +19,28 @@ export const settingDefaults = {
     telegram: "https://t.me/TenxStartuper",
   },
   home: {
-    badge: "Founder & engineer · Building Oqim",
-    title: "Building products that people love",
+    title: "{startups} startups so far. {live} live, {ended} ended.",
     subtitle:
       "Sharing lessons from the startups I've founded and built, so you don't have to make the same mistakes.",
     primaryLabel: "Say hi",
     secondaryLabel: "Read essays",
     strip: [] as StripPhoto[],
-    startupsTitle: "Built on speed, finished with care.",
-    aboutTitle: "Hi, I am\nYusuf",
+    aboutTitle: "yusuf, builder and engineer from tashkent",
     aboutText:
-      "A builder and engineer from Tashkent, now between Uzbekistan and the Bay Area. I've founded, built and advised startups, and I write about what shipping them taught me.",
+      "Now between Uzbekistan and the Bay Area. I've founded, built and advised startups, and I write about what shipping them taught me.",
     stats: [
       { value: "{startups}", label: "startups founded, built or advised" },
       { value: "{years}+", label: "years building products" },
       { value: "13.7k+", label: "learners on 42.uz" },
     ] as Stat[],
-    workTitle: "From Tashkent to the Bay, one team at a time.",
-    essaysTitle: "Things I've written.",
-    ctaTitle: "Have an idea in mind? Let's make it real.",
+    workTitle: "where i've worked",
+    essaysTitle: "things i've written",
+    ctaTitle: "working on something? message me",
     ctaText:
-      "Got an idea, a team that needs to ship, or just a question? I'm one message away.",
+      "An idea, a team that needs to ship, or just a question. I'm one message away.",
   },
   about: {
-    title: "The builder behind the products.",
+    title: "builder and engineer from tashkent",
     lede: "{years} years of turning ideas into startups, from Tashkent to the Bay Area. Founder at Oqim, engineer at Dorim.",
     bioLead:
       "I grew up around people who were curious about technology, and that curiosity stuck. I started building things early: websites, small apps, ideas that didn't always work. Some did.",
@@ -61,10 +59,10 @@ export const settingDefaults = {
       "Expo",
       "Node.js",
     ],
-    workTitle: "Every team, for how long, and what I did there.",
-    educationTitle: "Where I studied.",
-    talksTitle: "Rooms I've spoken in.",
-    instagramTitle: "A few moments from Instagram.",
+    workTitle: "every team, for how long, and what i did there",
+    educationTitle: "where i studied",
+    talksTitle: "rooms i've spoken in",
+    instagramTitle: "a few moments from instagram",
     playlistUrl:
       "https://open.spotify.com/embed/playlist/2HMFDNtUN8CzRy1vShvYDQ",
   },
@@ -79,12 +77,34 @@ export const settingDefaults = {
 export type Settings = typeof settingDefaults;
 export type SettingGroup = keyof Settings;
 
-/** "{startups}" and "{years}" in copy become the live numbers. */
-export function fillPlaceholders(
-  text: string,
-  values: { startups: number; years: number },
-) {
-  return text
-    .replaceAll("{startups}", String(values.startups))
-    .replaceAll("{years}", String(values.years));
+export type LiveNumbers = {
+  startups: number;
+  years: number;
+  /** startups still running */
+  live: number;
+  /** startups that were shut down */
+  ended: number;
+};
+
+/** What the placeholders stand for, counted from the startups themselves. */
+export function liveNumbers(
+  startups: { status: string }[],
+  years: number,
+): LiveNumbers {
+  const count = (status: string) =>
+    startups.filter((s) => s.status === status).length;
+  return {
+    startups: startups.length,
+    years,
+    live: count("active"),
+    ended: count("discontinued"),
+  };
+}
+
+/** "{startups}", "{years}", "{live}" and "{ended}" become the live numbers. */
+export function fillPlaceholders(text: string, values: LiveNumbers) {
+  return Object.entries(values).reduce(
+    (out, [key, value]) => out.replaceAll(`{${key}}`, String(value)),
+    text,
+  );
 }
