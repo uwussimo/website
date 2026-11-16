@@ -63,7 +63,7 @@ export function StartupLogo({
 }
 
 /**
- * "600+ creators" reads as a big number over a small noun, the way a store
+ * "4,500+ creators" reads as a big number over a small noun, the way a store
  * listing shows "4.8" over "ratings". Anything else stays whole.
  */
 function splitUsers(users: string): [label: string, value: string] {
