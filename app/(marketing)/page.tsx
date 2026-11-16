@@ -4,10 +4,10 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowRight01Icon, TelegramIcon } from "@hugeicons/core-free-icons";
 import { formatPeriod } from "@/lib/career";
 import {
-  getCovers,
   getEssays,
   getExperience,
   getMediaSizes,
+  getPolaroids,
   getSettings,
   getStartups,
 } from "@/lib/content";
@@ -25,9 +25,9 @@ import { CtaSection } from "./_components/cta-section";
 const delay = (ms: number) => ({ "--delay": `${ms}ms` }) as React.CSSProperties;
 
 export default async function Home() {
-  const [startups, covers, work, essays, settings] = await Promise.all([
+  const [startups, photos, work, essays, settings] = await Promise.all([
     getStartups(),
-    getCovers(),
+    getPolaroids(),
     getExperience("work"),
     getEssays(),
     getSettings(),
@@ -129,10 +129,10 @@ export default async function Home() {
       {featured.length > 0 && (
         <section className="container-site mt-32">
           <SectionHeading tag="Selected startups" title={home.startupsTitle} />
-          <div className="mt-14 grid gap-x-6 gap-y-10 sm:grid-cols-2">
+          <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {featured.map((startup, i) => (
               <Reveal key={startup.id} delay={(i % 2) * 80}>
-                <StartupCard startup={startup} cover={covers[startup.slug]} />
+                <StartupCard startup={startup} photos={photos[startup.slug]} />
               </Reveal>
             ))}
           </div>
@@ -212,7 +212,7 @@ export default async function Home() {
       {essays.length > 0 && (
         <section className="container-site mt-32">
           <SectionHeading tag="Writing" title={home.essaysTitle} />
-          <div className="mt-14 grid gap-4 sm:grid-cols-2">
+          <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {essays.slice(0, 4).map((essay, i) => (
               <Reveal key={essay.slug} delay={(i % 2) * 80}>
                 <Link

@@ -7,7 +7,7 @@ export const startups = [
     slug: "oqim",
     role: "Founder",
     desc: "a creator ecosystem for central asia: a ugc marketplace, a family of creator tools, and palantir-level access to market data.",
-    users: "600+ creators",
+    users: "4,500+ creators",
     mrr: "NDA",
     founded: "2026",
     status: "active",
@@ -119,7 +119,7 @@ export const experience: SeedExperience[] = [
     summary:
       "a creator ecosystem for central asia. brands meet creators on a ugc marketplace, creators get a family of tools on one account, and we have palantir-level access to market data.",
     highlights: [
-      "600+ creators on the marketplace, 2,500+ content creators across the ecosystem",
+      "4,500+ creators on the platform",
       "ugc marketplace: brands brief a campaign and pay per view, creators post reels and get paid",
       "atlas: a live map of the market's creators, content and brands",
       "creator tools: chat for instagram dms, canvas for ai-made visuals, obio for link-in-bio, and more",

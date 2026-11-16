@@ -97,14 +97,6 @@ export async function getMediaSizes(
   );
 }
 
-/** First polaroid per slug, used as the cover image of a startup. */
-export async function getCovers(): Promise<Record<string, string>> {
-  const photos = await getPolaroids();
-  return Object.fromEntries(
-    Object.entries(photos).map(([slug, list]) => [slug, list[0].src]),
-  );
-}
-
 /** Every settings group, with the defaults filled in for anything unset. */
 export async function getSettings(): Promise<Settings> {
   const rows = await orm.Setting.all();

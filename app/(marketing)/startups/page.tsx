@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { getCovers, getStartups } from "@/lib/content";
+import { getPolaroids, getStartups } from "@/lib/content";
 import { SectionHeading } from "@/components/section-heading";
 import { StartupList } from "../_components/startup-list";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Startups() {
-  const [startups, covers] = await Promise.all([getStartups(), getCovers()]);
+  const [startups, photos] = await Promise.all([getStartups(), getPolaroids()]);
 
   return (
     <main className="container-site pt-16 sm:pt-24">
@@ -21,7 +21,7 @@ export default async function Startups() {
         lede="Everything I've founded, built or advised, from a lyceum-era edtech to a creator ecosystem for Central Asia."
         className="mb-12"
       />
-      <StartupList startups={startups} covers={covers} />
+      <StartupList startups={startups} photos={photos} />
     </main>
   );
 }
