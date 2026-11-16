@@ -3,7 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { TelegramIcon } from "@hugeicons/core-free-icons";
 import type { Experience } from "@/lib/content";
 import type { Settings } from "@/lib/settings";
-import { Reveal } from "@/components/reveal";
+import { StatusDot } from "@/components/status-dot";
 
 /** Closing pitch with a "now" list of whatever is still running. */
 export function CtaSection({
@@ -18,10 +18,10 @@ export function CtaSection({
   const now = work.filter((item) => item.endDate === "present");
 
   return (
-    <section className="container-site mt-32 grid gap-10 lg:grid-cols-2 lg:gap-16">
-      <Reveal>
-        <h2 className="h-section">{home.ctaTitle}</h2>
-        <p className="lede mt-6 max-w-[460px]">{home.ctaText}</p>
+    <section className="container-site mt-24 grid gap-10 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h2 className="h-section text-balance">{home.ctaTitle}</h2>
+        <p className="lede mt-4 max-w-[460px]">{home.ctaText}</p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <a
             href={chatUrl}
@@ -36,21 +36,26 @@ export function CtaSection({
             About me
           </Link>
         </div>
-      </Reveal>
-      <Reveal variant="right">
-        <p className="meta mb-3">Right now</p>
-        <div className="space-y-2">
-          {now.map((item) => (
-            <div
-              key={item.id}
-              className="card flex items-center justify-between gap-4 px-5 py-4"
-            >
-              <span className="body-text font-medium">{item.company}</span>
-              <span className="meta text-right">{item.role.toLowerCase()}</span>
-            </div>
-          ))}
+      </div>
+      {now.length > 0 && (
+        <div>
+          <p className="meta">right now</p>
+          <ul className="mt-2">
+            {now.map((item) => (
+              <li
+                key={item.id}
+                className="flex items-center gap-3 border-b border-border py-4"
+              >
+                <StatusDot status="active" />
+                <span className="body-text font-medium">{item.company}</span>
+                <span className="meta ml-auto text-right">
+                  {item.role.toLowerCase()}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
-      </Reveal>
+      )}
     </section>
   );
 }

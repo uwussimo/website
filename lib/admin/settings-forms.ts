@@ -21,17 +21,11 @@ export const settingsPages: SettingsPage[] = [
     fields: [
       {
         section: "Hero",
-        name: "badge",
-        label: "Badge",
-        type: "text",
-        required: true,
-      },
-      {
-        section: "Hero",
         name: "title",
         label: "Headline",
         type: "text",
         required: true,
+        help: "{startups}, {live} and {ended} become the live numbers.",
       },
       {
         section: "Hero",
@@ -84,13 +78,6 @@ export const settingsPages: SettingsPage[] = [
         label: "Numbers",
         type: "stats",
         help: "{startups} and {years} become the live numbers.",
-      },
-      {
-        section: "Section titles",
-        name: "startupsTitle",
-        label: "Startups",
-        type: "text",
-        required: true,
       },
       {
         section: "Section titles",

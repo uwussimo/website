@@ -1,5 +1,6 @@
 import { formatDuration, formatPeriod } from "@/lib/career";
 import type { Experience, Photo } from "@/lib/content";
+import { StatusDot } from "@/components/status-dot";
 
 export function ExperienceItem({
   experience,
@@ -14,12 +15,15 @@ export function ExperienceItem({
   const side = [duration, note, location].filter(Boolean).join(" · ");
 
   return (
-    <article className="grid gap-x-10 gap-y-3 border-t border-border py-8 sm:grid-cols-[200px_1fr]">
+    <article className="ledger-row">
       <div>
-        <p className="body-text font-medium">{formatPeriod(experience)}</p>
+        <p className="body-text flex items-center gap-2 font-medium tabular-nums">
+          {experience.endDate === "present" && <StatusDot status="active" />}
+          {formatPeriod(experience)}
+        </p>
         {side && <p className="meta">{side}</p>}
       </div>
-      <div>
+      <div className="max-w-[640px]">
         <h3 className="h-card">
           {link ? (
             <a
@@ -62,7 +66,7 @@ export function ExperienceItem({
                 src={src}
                 alt={`${company}: ${caption}`}
                 loading="lazy"
-                className="h-28 w-auto shrink-0 rounded-xl object-cover"
+                className="h-28 w-auto shrink-0 rounded-lg object-cover"
               />
             ))}
           </div>

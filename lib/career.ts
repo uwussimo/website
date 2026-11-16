@@ -9,6 +9,33 @@ export const statusLabels: Record<string, string> = {
 };
 
 /**
+ * "4,500+ creators" reads as a big number over a small noun, the way a store
+ * listing shows "4.8" over "ratings". Anything else stays whole.
+ */
+function splitUsers(users: string): [label: string, value: string] {
+  const match = users.trim().match(/^(\S*\d\S*)\s+(\D+)$/);
+  return match ? [match[2], match[1]] : ["users", users];
+}
+
+/** The facts worth a cell: "n/a" says nothing, so it is left out. */
+export function startupFacts({
+  users,
+  mrr,
+  founded,
+}: {
+  users: string;
+  mrr: string;
+  founded: string;
+}): [string, string][] {
+  const facts: [string, string][] = [
+    splitUsers(users),
+    ["mrr", mrr],
+    ["founded", founded],
+  ];
+  return facts.filter(([, value]) => !/^n\/?a$/i.test(value.trim()));
+}
+
+/**
  * Dates are "YYYY" or "YYYY-MM"; the more precise they are, the more precise
  * the duration shown. `endDate: "present"` means still there; leave it empty
  * when the role is over but the date isn't known. Entries without dates fall
@@ -47,6 +74,14 @@ function formatDate(value: string): string {
   if (value === "present") return "now";
   const [year, month] = value.split("-");
   return month ? `${MONTHS[Number(month) - 1]} ${year}` : year;
+}
+
+/** An essay's "2026-09-29" in the same style as the work dates. */
+export function formatDay(value: string): string {
+  const match = value.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!match) return value;
+  const [, year, month, day] = match;
+  return `${Number(day)} ${MONTHS[Number(month) - 1]} ${year}`;
 }
 
 export function formatPeriod({ startDate, endDate, whenLabel }: Dated): string {

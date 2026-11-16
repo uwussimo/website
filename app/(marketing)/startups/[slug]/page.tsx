@@ -7,7 +7,7 @@ import {
   ArrowLeft01Icon,
   ArrowUpRight01Icon,
 } from "@hugeicons/core-free-icons";
-import { formatPeriod, statusLabels } from "@/lib/career";
+import { formatPeriod, startupFacts, statusLabels } from "@/lib/career";
 import {
   getExperienceForSlug,
   getPolaroids,
@@ -15,7 +15,7 @@ import {
   getStartups,
 } from "@/lib/content";
 import { Gallery } from "@/components/gallery";
-import { Reveal } from "@/components/reveal";
+import { StatusDot } from "@/components/status-dot";
 import { StartupLogo } from "../../_components/startup-card";
 
 type Props = { params: Promise<{ slug: string }> };
@@ -45,73 +45,73 @@ export default async function StartupPage({ params }: Props) {
 
   const photos = polaroids[slug] ?? [];
   const [cover, ...rest] = photos;
-  const facts = [
-    ["Role", startup.role.toLowerCase()],
-    ["Founded", startup.founded],
-    ["Users", startup.users.toLowerCase()],
-    ["MRR", startup.mrr.toLowerCase()],
-    ["Status", statusLabels[startup.status] ?? startup.status],
-  ];
+  const facts = [["role", startup.role], ...startupFacts(startup)];
   const domain = startup.link?.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
   return (
     <main className="container-site pt-12 sm:pt-20">
       <div className="mx-auto max-w-[840px]">
-        <Reveal>
-          <Link
-            href="/startups"
-            className="meta inline-flex items-center gap-1 hover:text-foreground"
-          >
-            <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
-            All startups
-          </Link>
-          <div className="mt-8 flex items-center gap-4">
-            <StartupLogo startup={startup} size={56} className="bg-surface" />
-            <h1 className="h-section">{startup.name}</h1>
+        <Link
+          href="/startups"
+          className="meta inline-flex items-center gap-1 hover:text-foreground"
+        >
+          <HugeiconsIcon icon={ArrowLeft01Icon} className="size-4" />
+          All startups
+        </Link>
+        <div className="mt-8 flex items-center gap-4">
+          <StartupLogo
+            startup={startup}
+            size={64}
+            className="ring-1 ring-border"
+          />
+          <div className="min-w-0">
+            <h1 className="h-display truncate">{startup.name}</h1>
+            <p className="meta flex items-center gap-2">
+              <StatusDot status={startup.status} />
+              {statusLabels[startup.status] ?? startup.status}
+            </p>
           </div>
-          <p className="lede mt-5 max-w-[560px]">{startup.description}</p>
-          {startup.link && (
-            <a
-              href={startup.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary mt-7"
-            >
-              Visit {domain}
-              <HugeiconsIcon icon={ArrowUpRight01Icon} className="size-4" />
-            </a>
-          )}
-        </Reveal>
-
-        {cover && (
-          <Reveal variant="grow" className="mt-12">
-            <div className="img-card aspect-[16/10]">
-              <Image
-                src={cover.src}
-                alt={`${startup.name}: ${cover.caption}`}
-                fill
-                priority
-                sizes="(min-width: 840px) 840px, 100vw"
-                className="object-cover object-[50%_20%]"
-              />
-            </div>
-          </Reveal>
+        </div>
+        <p className="lede mt-5 max-w-[560px]">{startup.description}</p>
+        {startup.link && (
+          <a
+            href={startup.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary mt-8"
+          >
+            Visit {domain}
+            <HugeiconsIcon icon={ArrowUpRight01Icon} className="size-4" />
+          </a>
         )}
 
-        <Reveal className="card mt-6 grid grid-cols-2 gap-6 p-6 sm:grid-cols-5 sm:p-8">
+        {cover && (
+          <div className="img-card mt-12 aspect-[16/10]">
+            <Image
+              src={cover.src}
+              alt={`${startup.name}: ${cover.caption}`}
+              fill
+              priority
+              sizes="(min-width: 840px) 840px, 100vw"
+              className="object-cover object-[50%_20%]"
+            />
+          </div>
+        )}
+
+        <dl className="mt-8 flex flex-wrap gap-x-12 gap-y-4 border-y border-border py-5">
           {facts.map(([label, value]) => (
-            <div key={label}>
-              <p className="meta">{label}</p>
-              <p className="body-text mt-1 font-medium">{value}</p>
+            <div key={label} className="flex flex-col-reverse">
+              <dt className="meta">{label}</dt>
+              <dd className="body-text font-medium tabular-nums">
+                {value.toLowerCase()}
+              </dd>
             </div>
           ))}
-        </Reveal>
+        </dl>
 
         {work && (
-          <Reveal className="mt-16">
-            <h2 className="text-[32px] font-semibold tracking-[-0.04em]">
-              What I did there
-            </h2>
+          <section className="mt-16">
+            <h2 className="h-section">what i did there</h2>
             <p className="meta mt-2">
               {work.role.toLowerCase()} · {formatPeriod(work)}
             </p>
@@ -133,16 +133,14 @@ export default async function StartupPage({ params }: Props) {
                 ))}
               </ul>
             )}
-          </Reveal>
+          </section>
         )}
 
         {rest.length > 0 && (
-          <Reveal className="mt-16">
-            <h2 className="text-[32px] font-semibold tracking-[-0.04em]">
-              Moments
-            </h2>
+          <section className="mt-16">
+            <h2 className="h-section">moments</h2>
             <Gallery photos={rest} label={startup.name} className="mt-6" />
-          </Reveal>
+          </section>
         )}
       </div>
     </main>

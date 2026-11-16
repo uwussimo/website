@@ -51,7 +51,7 @@ const Footer = ({
       </div>
       <div className="mt-14 flex flex-col gap-2 border-t border-background/15 pt-6 text-[14px] text-background/70 sm:flex-row sm:justify-between">
         <p>
-          © {new Date().getFullYear()} {footer.copyright}. All rights reserved.
+          © {new Date().getFullYear()} {footer.copyright}
         </p>
         <p>usufdev.com</p>
       </div>

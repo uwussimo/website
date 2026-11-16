@@ -12,14 +12,13 @@ import {
   getStartups,
 } from "@/lib/content";
 import { mediaUrl } from "@/lib/media-url";
-import { fillPlaceholders } from "@/lib/settings";
+import { fillPlaceholders, liveNumbers } from "@/lib/settings";
 import { avatarSrc, yearsBuilding } from "@/lib/site";
-import { CountUp } from "@/components/count-up";
-import { Reveal } from "@/components/reveal";
 import { SectionHeading } from "@/components/section-heading";
-import { Ticker } from "@/components/ticker";
+import { StatusDot } from "@/components/status-dot";
 import { Photo } from "@/components/photo";
 import { StartupCard } from "./_components/startup-card";
+import { EssayRow } from "./_components/essay-row";
 import { CtaSection } from "./_components/cta-section";
 
 const delay = (ms: number) => ({ "--delay": `${ms}ms` }) as React.CSSProperties;
@@ -34,39 +33,28 @@ export default async function Home() {
   ]);
   const { home, profile } = settings;
   const featured = startups.filter((s) => s.featured);
-  const numbers = { startups: startups.length, years: yearsBuilding() };
+  const numbers = liveNumbers(startups, yearsBuilding());
   const fill = (text: string) => fillPlaceholders(text, numbers);
 
   // the photo strip keeps each picture's own aspect ratio
   const sizes = await getMediaSizes(home.strip.map((p) => p.mediaId));
 
-  const companies = [
-    ...new Set([...startups.map((s) => s.name), ...work.map((w) => w.company)]),
-  ];
-
   return (
     <main>
-      {/* hero */}
-      <section className="container-site flex flex-col items-center pb-16 pt-20 text-center sm:pt-28">
-        <span className="tag animate-rise">
-          <span className="size-2 rounded-full bg-[#22c55e]" />
-          {home.badge}
-        </span>
-        <h1
-          className="h-display animate-rise mt-6 max-w-[760px] text-balance"
-          style={delay(100)}
-        >
-          {home.title}
+      {/* the count, then the listings themselves */}
+      <section className="container-site pt-16 sm:pt-24">
+        <h1 className="h-display animate-rise max-w-[760px] text-balance">
+          {fill(home.title)}
         </h1>
         <p
-          className="lede animate-rise mt-6 max-w-[520px] text-pretty"
-          style={delay(200)}
+          className="lede animate-rise mt-5 max-w-[520px] text-pretty"
+          style={delay(80)}
         >
           {home.subtitle}
         </p>
         <div
-          className="animate-rise mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row"
-          style={delay(300)}
+          className="animate-rise mt-8 flex flex-col gap-3 sm:flex-row"
+          style={delay(160)}
         >
           <a
             href={profile.chatUrl}
@@ -81,171 +69,132 @@ export default async function Home() {
             {home.secondaryLabel}
           </Link>
         </div>
-        <div
-          className="animate-rise mt-12 w-full max-w-[720px]"
-          style={delay(400)}
-        >
-          <Ticker duration={45} gap="gap-10">
-            {companies.map((name) => (
-              <span
-                key={name}
-                className="whitespace-nowrap text-[18px] font-semibold tracking-[-0.03em] text-foreground/35 lowercase"
-              >
-                {name}
-              </span>
-            ))}
-          </Ticker>
-        </div>
-      </section>
 
-      {/* photo strip */}
-      {home.strip.length > 0 && (
-        <Reveal variant="grow" className="mt-4">
-          <Ticker duration={70} gap="gap-4">
-            {home.strip.map(({ mediaId, caption }) => {
-              const size = sizes[mediaId];
-              const ratio = size ? size.width / size.height : 0.8;
-              return (
-                <div
-                  key={mediaId}
-                  className="img-card h-[260px] shrink-0 sm:h-[360px]"
-                  style={{ aspectRatio: ratio }}
-                >
-                  <Image
-                    src={mediaUrl(mediaId)}
-                    alt={caption}
-                    fill
-                    sizes="400px"
-                    className="object-cover"
-                  />
-                </div>
-              );
-            })}
-          </Ticker>
-        </Reveal>
-      )}
-
-      {/* selected startups */}
-      {featured.length > 0 && (
-        <section className="container-site mt-32">
-          <SectionHeading tag="Selected startups" title={home.startupsTitle} />
-          <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {featured.map((startup, i) => (
-              <Reveal key={startup.id} delay={(i % 2) * 80}>
-                <StartupCard startup={startup} photos={photos[startup.slug]} />
-              </Reveal>
-            ))}
-          </div>
-          <Reveal className="mt-10 text-center">
-            <Link href="/startups" className="btn-secondary">
+        {featured.length > 0 && (
+          <div className="animate-rise mt-14" style={delay(240)}>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {featured.map((startup) => (
+                <StartupCard
+                  key={startup.id}
+                  startup={startup}
+                  photos={photos[startup.slug]}
+                />
+              ))}
+            </div>
+            <Link href="/startups" className="btn-secondary mt-8">
               All {startups.length} startups
               <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
             </Link>
-          </Reveal>
-        </section>
+          </div>
+        )}
+      </section>
+
+      {/* photo strip: scrolls by hand, runs to both edges of the window */}
+      {home.strip.length > 0 && (
+        <div className="mt-24 flex gap-4 overflow-x-auto px-6 [scrollbar-width:none]">
+          {home.strip.map(({ mediaId, caption }) => {
+            const size = sizes[mediaId];
+            const ratio = size ? size.width / size.height : 0.8;
+            return (
+              <div
+                key={mediaId}
+                className="img-card h-[260px] shrink-0 sm:h-[360px]"
+                style={{ aspectRatio: ratio }}
+              >
+                <Image
+                  src={mediaUrl(mediaId)}
+                  alt={caption}
+                  fill
+                  sizes="400px"
+                  className="object-cover"
+                />
+              </div>
+            );
+          })}
+        </div>
       )}
 
       {/* about */}
-      <section className="container-site mt-32 grid items-center gap-10 lg:grid-cols-2">
-        <Reveal>
-          <span className="tag">About</span>
-          <h2 className="h-section mt-5 whitespace-pre-line">
+      <section className="container-site mt-24 grid items-center gap-10 lg:grid-cols-2">
+        <div>
+          <h2 className="h-section whitespace-pre-line text-balance">
             {home.aboutTitle}
           </h2>
-          <p className="lede mt-6 max-w-[460px]">{fill(home.aboutText)}</p>
+          <p className="lede mt-4 max-w-[460px]">{fill(home.aboutText)}</p>
           {home.stats.length > 0 && (
-            <div className="mt-8 grid grid-cols-3 gap-3">
+            <dl className="mt-8 flex gap-8">
               {home.stats.map(({ value, label }) => (
-                <div key={label} className="card p-4 sm:p-5">
-                  <p className="text-[24px] font-semibold tracking-[-0.04em]">
-                    <CountUp value={fill(value)} />
-                  </p>
-                  <p className="meta mt-1">{label}</p>
+                <div
+                  key={label}
+                  className="flex max-w-[160px] flex-col-reverse"
+                >
+                  <dt className="meta mt-1">{label}</dt>
+                  <dd className="text-[24px] font-medium leading-[32px] tracking-[-0.03em] tabular-nums">
+                    {fill(value)}
+                  </dd>
                 </div>
               ))}
-            </div>
+            </dl>
           )}
           <Link href="/about" className="btn-secondary mt-8">
             More about me
             <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
           </Link>
-        </Reveal>
-        <Reveal variant="grow">
-          <Photo
-            src={avatarSrc(profile)}
-            alt={`Portrait of ${profile.name}`}
-            sizes="(min-width: 1024px) 508px, 100vw"
-            className="aspect-square w-full"
-          />
-        </Reveal>
+        </div>
+        <Photo
+          src={avatarSrc(profile)}
+          alt={`Portrait of ${profile.name}`}
+          sizes="(min-width: 1024px) 508px, 100vw"
+          className="aspect-square w-full"
+        />
       </section>
 
       {/* work */}
       {work.length > 0 && (
-        <section className="container-site mt-32">
-          <SectionHeading tag="Where I've worked" title={home.workTitle} />
-          <Reveal className="mx-auto mt-14 max-w-[760px]">
+        <section className="container-site mt-24">
+          <SectionHeading title={home.workTitle} />
+          <div className="mt-8">
             {work.slice(0, 6).map((item) => (
               <Link
                 key={item.id}
                 href="/about#experience"
-                className="flex items-baseline justify-between gap-6 border-t border-border py-5 transition-colors hover:bg-surface"
+                className="flex items-baseline justify-between gap-6 border-t border-border py-4 transition-colors hover:bg-surface"
               >
                 <span className="min-w-0">
                   <span className="h-card block truncate">{item.company}</span>
                   <span className="meta block">{item.role.toLowerCase()}</span>
                 </span>
-                <span className="meta shrink-0">{formatPeriod(item)}</span>
+                <span className="meta flex shrink-0 items-center gap-2 tabular-nums">
+                  {item.endDate === "present" && <StatusDot status="active" />}
+                  {formatPeriod(item)}
+                </span>
               </Link>
             ))}
-            <div className="border-t border-border pt-8 text-center">
+            <div className="border-t border-border pt-8">
               <Link href="/about#experience" className="btn-secondary">
                 What I did there
                 <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
               </Link>
             </div>
-          </Reveal>
+          </div>
         </section>
       )}
 
       {/* essays */}
       {essays.length > 0 && (
-        <section className="container-site mt-32">
-          <SectionHeading tag="Writing" title={home.essaysTitle} />
-          <div className="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {essays.slice(0, 4).map((essay, i) => (
-              <Reveal key={essay.slug} delay={(i % 2) * 80}>
-                <Link
-                  href={`/essays/${essay.slug}`}
-                  className="card pop flex h-full flex-col justify-between p-6 sm:p-8"
-                >
-                  <div>
-                    <p className="meta">
-                      {essay.date} · {essay.readTime} read
-                    </p>
-                    <h3 className="mt-3 text-[24px] font-medium leading-[1.2] tracking-[-0.03em]">
-                      {essay.title}
-                    </h3>
-                    {essay.description && (
-                      <p className="body-text mt-3 text-foreground/70">
-                        {essay.description}
-                      </p>
-                    )}
-                  </div>
-                  <span className="mt-6 inline-flex items-center gap-1 text-[14px] font-medium">
-                    Read{" "}
-                    <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
-                  </span>
-                </Link>
-              </Reveal>
+        <section className="container-site mt-24">
+          <SectionHeading title={home.essaysTitle} />
+          <div className="mt-8">
+            {essays.slice(0, 4).map((essay) => (
+              <EssayRow key={essay.slug} essay={essay} />
             ))}
+            <div className="border-t border-border pt-8">
+              <Link href="/essays" className="btn-secondary">
+                All {essays.length} essays
+                <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
+              </Link>
+            </div>
           </div>
-          <Reveal className="mt-10 text-center">
-            <Link href="/essays" className="btn-secondary">
-              All {essays.length} essays
-              <HugeiconsIcon icon={ArrowRight01Icon} className="size-4" />
-            </Link>
-          </Reveal>
         </section>
       )}
 

@@ -1,31 +1,19 @@
 import { cn } from "@/lib/utils";
-import { Reveal } from "./reveal";
 
-/** A grey tag above a big headline, centred by default like the reference. */
+/** A section's heading, left-aligned, with an optional line under it. */
 export function SectionHeading({
-  tag,
   title,
   lede,
-  align = "center",
   as: Heading = "h2",
   className,
 }: {
-  tag?: string;
   title: React.ReactNode;
   lede?: React.ReactNode;
-  align?: "center" | "left";
   as?: "h1" | "h2";
   className?: string;
 }) {
   return (
-    <Reveal
-      className={cn(
-        "flex flex-col gap-5",
-        align === "center" && "items-center text-center",
-        className,
-      )}
-    >
-      {tag && <span className="tag">{tag}</span>}
+    <div className={className}>
       <Heading
         className={cn(
           Heading === "h1" ? "h-display" : "h-section",
@@ -34,7 +22,7 @@ export function SectionHeading({
       >
         {title}
       </Heading>
-      {lede && <p className="lede max-w-[560px] text-pretty">{lede}</p>}
-    </Reveal>
+      {lede && <p className="lede mt-4 max-w-[560px] text-pretty">{lede}</p>}
+    </div>
   );
 }
